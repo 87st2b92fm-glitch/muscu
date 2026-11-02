@@ -12,7 +12,7 @@ const TABS: { to: string; label: string; icon: LucideIcon }[] = [
 export default function TabBar() {
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
-      <ul className="border-border/70 bg-surface/80 pointer-events-auto flex w-full max-w-md gap-1 rounded-full border p-1.5 shadow-xl shadow-black/30 backdrop-blur-xl">
+      <ul className="pointer-events-auto flex w-full max-w-md gap-1 rounded-full border border-border/70 bg-surface/80 p-1.5 shadow-xl shadow-black/30 backdrop-blur-xl">
         {TABS.map(({ to, label, icon: Icon }) => (
           <li key={to} className="flex-1">
             <NavLink

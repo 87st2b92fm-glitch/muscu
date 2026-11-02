@@ -19,7 +19,7 @@ export default function PageHeader({
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="text-accent -ml-2 flex min-h-11 items-center gap-0.5 pr-3 font-medium"
+          className="-ml-2 flex min-h-11 items-center gap-0.5 pr-3 font-medium text-accent"
         >
           <ChevronLeft size={24} aria-hidden />
           Retour

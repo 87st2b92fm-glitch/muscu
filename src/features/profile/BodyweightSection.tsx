@@ -42,7 +42,7 @@ export default function BodyweightSection() {
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="font-semibold">Poids de corps</p>
-          <p className="text-muted text-sm">
+          <p className="text-sm text-muted">
             {latest
               ? `${formatKg(latest.kg)} · ${dateFormatter.format(latest.at)}`
               : 'Aucune pesée : nécessaire pour les tractions lestées et les niveaux'}
@@ -55,7 +55,7 @@ export default function BodyweightSection() {
             setOpen(true)
           }}
           aria-label="Ajouter une pesée"
-          className="bg-accent text-accent-contrast flex size-11 shrink-0 items-center justify-center rounded-full active:opacity-80"
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-contrast active:opacity-80"
         >
           <Plus size={22} strokeWidth={2.5} aria-hidden />
         </button>
@@ -75,7 +75,7 @@ export default function BodyweightSection() {
                   type="button"
                   onClick={() => db.bodyweights.delete(entry.id)}
                   aria-label={`Supprimer la pesée du ${dateFormatter.format(entry.at)}`}
-                  className="text-muted active:text-text flex size-11 items-center justify-center"
+                  className="flex size-11 items-center justify-center text-muted active:text-text"
                 >
                   <Trash2 size={18} aria-hidden />
                 </button>
@@ -94,23 +94,23 @@ export default function BodyweightSection() {
           }}
         >
           <label className="flex flex-col gap-1.5">
-            <span className="text-muted text-sm font-semibold">Poids (kg)</span>
+            <span className="text-sm font-semibold text-muted">Poids (kg)</span>
             <input
               inputMode="decimal"
               value={kgInput}
               onChange={(e) => setKgInput(e.target.value)}
               placeholder="64,5"
-              className="bg-surface-2 min-h-14 rounded-2xl px-4 text-2xl font-bold tabular-nums outline-none"
+              className="min-h-14 rounded-2xl bg-surface-2 px-4 text-2xl font-bold tabular-nums outline-none"
             />
           </label>
           <label className="flex flex-col gap-1.5">
-            <span className="text-muted text-sm font-semibold">Date</span>
+            <span className="text-sm font-semibold text-muted">Date</span>
             <input
               type="date"
               value={dateInput}
               max={today()}
               onChange={(e) => setDateInput(e.target.value)}
-              className="bg-surface-2 min-h-12 rounded-2xl px-4 outline-none"
+              className="min-h-12 rounded-2xl bg-surface-2 px-4 outline-none"
             />
           </label>
           <Button type="submit" disabled={kg === null || !dateInput}>

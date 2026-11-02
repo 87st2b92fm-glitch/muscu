@@ -5,17 +5,17 @@ import type { FolderSummary, TemplateSummary } from './demoTemplates'
 
 function TemplateCard({ template, isNext }: { template: TemplateSummary; isNext: boolean }) {
   return (
-    <article className="bg-surface flex flex-col gap-3 rounded-3xl p-4">
+    <article className="flex flex-col gap-3 rounded-3xl bg-surface p-4">
       <div>
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-bold">{template.name}</h3>
           {isNext && (
-            <span className="bg-accent/15 text-accent rounded-full px-2 py-0.5 text-xs font-semibold">
+            <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-semibold text-accent">
               Prochaine
             </span>
           )}
         </div>
-        <p className="text-muted mt-1 line-clamp-2 text-[15px]">{template.exercises.join(', ')}</p>
+        <p className="mt-1 line-clamp-2 text-[15px] text-muted">{template.exercises.join(', ')}</p>
       </div>
       <Button variant={isNext ? 'primary' : 'secondary'}>
         <Play size={18} aria-hidden />
@@ -34,7 +34,7 @@ export default function TemplateFolder({ folder }: { folder: FolderSummary }) {
         type="button"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        className="text-muted flex min-h-11 items-center gap-2 text-left font-semibold"
+        className="flex min-h-11 items-center gap-2 text-left font-semibold text-muted"
       >
         <ChevronDown
           size={20}

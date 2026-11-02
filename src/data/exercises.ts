@@ -1,9 +1,13 @@
 import type { Equipment, Exercise } from '../db/types'
-import type { LoadMode } from '../domain/types'
+import type { ExerciseCategory, LoadMode } from '../domain/types'
 import type { MuscleId } from './muscles'
 
 /** Poulies et appareils guidés sont des machines : leurs records sont propres à chaque salle. */
-const MACHINE_EQUIPMENT: Equipment[] = ['machine', 'cable', 'smith']
+export function categoryOf(equipment: Equipment): ExerciseCategory {
+  return equipment === 'machine' || equipment === 'cable' || equipment === 'smith'
+    ? 'machine'
+    : 'free'
+}
 
 function ex(
   id: string,
@@ -17,7 +21,7 @@ function ex(
   return {
     id,
     name,
-    category: MACHINE_EQUIPMENT.includes(equipment) ? 'machine' : 'free',
+    category: categoryOf(equipment),
     equipment,
     primaryMuscles,
     secondaryMuscles,

@@ -46,7 +46,7 @@ export default function TrainingPage() {
             <button
               type="button"
               aria-label="Nouveau dossier"
-              className="text-text active:bg-surface flex size-11 items-center justify-center rounded-full"
+              className="flex size-11 items-center justify-center rounded-full text-text active:bg-surface"
             >
               <FolderPlus size={24} aria-hidden />
             </button>

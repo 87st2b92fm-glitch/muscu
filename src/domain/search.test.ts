@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { matchesSearch, normalizeText } from './search'
+import { byName, matchesSearch, normalizeText } from './search'
 
 describe('normalizeText', () => {
   it('retire accents, majuscules et espaces superflus', () => {
@@ -24,5 +24,18 @@ describe('matchesSearch', () => {
 
   it('exige tous les mots', () => {
     expect(matchesSearch('curl marteau', ['Curl (barre)'])).toBe(false)
+  })
+})
+
+describe('byName', () => {
+  it('range les accents avec leur lettre', () => {
+    const names = ['Squat', 'Écartés', 'Élévations', 'Curl', 'extension'].map((name) => ({ name }))
+    expect(names.sort(byName).map((n) => n.name)).toEqual([
+      'Curl',
+      'Écartés',
+      'Élévations',
+      'extension',
+      'Squat',
+    ])
   })
 })

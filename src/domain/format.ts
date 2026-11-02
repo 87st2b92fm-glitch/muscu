@@ -15,6 +15,11 @@ export function formatSet(kg: number, reps: number): string {
   return `${formatKg(kg)} × ${reps}`
 }
 
+/** Série d'un exercice au poids du corps : « PDC × 8 », « PDC + 10 kg × 6 ». */
+export function formatBodyweightSet(lestKg: number, reps: number): string {
+  return lestKg > 0 ? `PDC + ${formatKg(lestKg)} × ${reps}` : `PDC × ${reps}`
+}
+
 /** Durée d'une séance : « 45 min », « 1 h 05 ». */
 export function formatDuration(minutes: number): string {
   const total = Math.round(minutes)

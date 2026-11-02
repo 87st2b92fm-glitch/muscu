@@ -13,7 +13,7 @@ export default function Segmented<T extends string>({
   onChange: (value: T) => void
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="bg-surface-2 flex gap-1 rounded-2xl p-1">
+    <div role="radiogroup" aria-label={label} className="flex gap-1 rounded-2xl bg-surface-2 p-1">
       {options.map(({ value: optionValue, label: optionLabel, icon: Icon }) => (
         <button
           key={optionValue}

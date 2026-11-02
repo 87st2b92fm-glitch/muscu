@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDay, formatDuration, formatKg, formatSet } from './format'
+import { formatBodyweightSet, formatDay, formatDuration, formatKg, formatSet } from './format'
 
 describe('formatKg', () => {
   it('affiche les entiers sans décimale', () => {
@@ -26,6 +26,13 @@ describe('formatKg', () => {
 describe('formatSet', () => {
   it('affiche charge et reps', () => {
     expect(formatSet(82.5, 8)).toBe('82,5 kg × 8')
+  })
+})
+
+describe('formatBodyweightSet', () => {
+  it('affiche le poids du corps seul ou avec lest', () => {
+    expect(formatBodyweightSet(0, 8)).toBe('PDC × 8')
+    expect(formatBodyweightSet(10, 6)).toBe('PDC + 10 kg × 6')
   })
 })
 

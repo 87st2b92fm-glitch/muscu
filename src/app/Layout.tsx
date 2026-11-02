@@ -14,7 +14,7 @@ export default function Layout() {
   return (
     <div className="flex h-dvh flex-col">
       {/* Fond opaque sous la barre d'état : le contenu défile dessous sans se mélanger à l'heure. */}
-      <div className="bg-bg fixed inset-x-0 top-0 z-30 h-[env(safe-area-inset-top)]" aria-hidden />
+      <div className="fixed inset-x-0 top-0 z-30 h-[env(safe-area-inset-top)] bg-bg" aria-hidden />
       <main
         ref={mainRef}
         className="flex-1 overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top)] pb-[calc(env(safe-area-inset-bottom)+6.5rem)]"

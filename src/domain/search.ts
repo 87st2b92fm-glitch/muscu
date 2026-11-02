@@ -15,3 +15,10 @@ export function matchesSearch(query: string, texts: readonly string[]): boolean 
   const haystack = texts.map(normalizeText).join(' | ')
   return words.every((word) => haystack.includes(word))
 }
+
+const collator = new Intl.Collator('fr', { sensitivity: 'base', numeric: true })
+
+/** Ordre alphabétique français : « Écartés » se range avec les E, pas après le Z. */
+export function byName<T extends { name: string }>(a: T, b: T): number {
+  return collator.compare(a.name, b.name)
+}

@@ -5,6 +5,7 @@ import TrainingPage from './features/training/TrainingPage'
 import PerformancePage from './features/performance/PerformancePage'
 import ExercisesPage from './features/exercises/ExercisesPage'
 import ProfilePage from './features/profile/ProfilePage'
+import ImportHevyPage from './features/import/ImportHevyPage'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="exercices" element={<ExercisesPage />} />
         <Route path="performance" element={<PerformancePage />} />
         <Route path="profil" element={<ProfilePage />} />
+        <Route path="import-hevy" element={<ImportHevyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

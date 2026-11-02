@@ -81,7 +81,7 @@ Principes :
 | 3 | Salles et exercices | CRUD salles (logo, disques, barres), marque et incrément machine par salle, lien entre salles ; bibliothèque et exercices perso |
 | 4 | Séance | Séance vide, marquage des records en direct, sélecteur de salle avec logos, saisie des séries, perf précédente, chrono de repos, supersets, notes, **mode salle** (Wake Lock) |
 | 5 | Modèles et programmes | |
-| 6 | Accueil et historique | Fil des séances avec records, filtre par salle, détail, modification |
+| 6 | Accueil et historique | Détail d'une séance, modification et suppression (le fil avec records et le filtre par salle sont faits depuis l'étape 2 bis) |
 | 7 | Records et graphiques | Onglet Performance, sélecteur de salle, records datés, courbes, nouveaux records en fin de séance |
 | 8 | Progression et disques | Suggestion pour la salle du jour, calculateur de disques |
 | 9 | Standards de force | Recherche et vérification → `strengthStandards.json` (source + date), rapport des données non vérifiables |

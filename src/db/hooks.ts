@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import type { GymLook } from '../data/defaultGyms'
+import { byName } from '../domain/search'
 import { db } from './db'
 import { PROFILE_ID, type Profile } from './types'
 
@@ -25,11 +26,8 @@ export function useGyms(): GymLook[] | undefined {
 }
 
 export function useExercises() {
-  return useLiveQuery(() =>
-    db.exercises
-      .orderBy('name')
-      .filter((e) => !e.archived)
-      .toArray(),
+  return useLiveQuery(async () =>
+    (await db.exercises.filter((e) => !e.archived).toArray()).sort(byName),
   )
 }
 

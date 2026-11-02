@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Check, Moon, ShieldAlert, ShieldCheck, Sun } from 'lucide-react'
+import { Link } from 'react-router'
+import { Check, ChevronRight, FileUp, Moon, ShieldAlert, ShieldCheck, Sun } from 'lucide-react'
 import PageHeader from '../../components/PageHeader'
 import Segmented from '../../components/Segmented'
 import { ACCENTS, useAppearance, type Theme } from '../../app/theme'
@@ -21,8 +22,8 @@ const SEXES: { value: Sex; label: string }[] = [
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-muted px-1 text-sm font-semibold">{title}</h2>
-      <div className="bg-surface flex flex-col gap-5 rounded-3xl p-4">{children}</div>
+      <h2 className="px-1 text-sm font-semibold text-muted">{title}</h2>
+      <div className="flex flex-col gap-5 rounded-3xl bg-surface p-4">{children}</div>
     </section>
   )
 }
@@ -45,7 +46,7 @@ function StorageStatus() {
       />
       <div>
         <p className="font-semibold">{persisted ? 'Données protégées' : 'Données non protégées'}</p>
-        <p className="text-muted text-sm">
+        <p className="text-sm text-muted">
           {persisted
             ? 'iOS ne supprimera pas tes données pour libérer de la place.'
             : 'iOS peut effacer les données d’un site peu utilisé. Installe l’app sur l’écran d’accueil et fais des sauvegardes régulières.'}
@@ -72,7 +73,7 @@ export default function ProfilePage() {
               value={profile?.sex ?? null}
               onChange={(sex) => void updateProfile({ sex })}
             />
-            <p className="text-muted text-sm">Utilisé uniquement pour les niveaux de force.</p>
+            <p className="text-sm text-muted">Utilisé uniquement pour les niveaux de force.</p>
           </div>
           <BodyweightSection />
         </Section>
@@ -90,7 +91,7 @@ export default function ProfilePage() {
                   aria-checked={accent === value}
                   aria-label={label}
                   onClick={() => setAccent(value)}
-                  className="ring-offset-surface aria-checked:ring-text flex size-12 items-center justify-center rounded-full ring-offset-2 transition-shadow aria-checked:ring-2"
+                  className="flex size-12 items-center justify-center rounded-full ring-offset-2 ring-offset-surface transition-shadow aria-checked:ring-2 aria-checked:ring-text"
                   style={{ backgroundColor: swatch }}
                 >
                   {accent === value && (
@@ -102,7 +103,12 @@ export default function ProfilePage() {
           </div>
         </Section>
 
-        <Section title="Stockage">
+        <Section title="Données">
+          <Link to="/import-hevy" className="-my-2 flex min-h-12 items-center gap-3 font-semibold">
+            <FileUp size={22} className="text-accent" aria-hidden />
+            <span className="flex-1">Importer depuis Hevy</span>
+            <ChevronRight size={20} className="text-muted" aria-hidden />
+          </Link>
           <StorageStatus />
         </Section>
       </div>

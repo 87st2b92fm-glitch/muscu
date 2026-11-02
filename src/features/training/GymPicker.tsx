@@ -26,7 +26,7 @@ export default function GymPicker({
         type="button"
         onClick={() => setOpen(true)}
         aria-label={`Salle : ${current.name}. Changer de salle`}
-        className="bg-surface flex min-h-11 items-center gap-2 rounded-full py-1.5 pr-3 pl-1.5 font-semibold active:opacity-80"
+        className="flex min-h-11 items-center gap-2 rounded-full bg-surface py-1.5 pr-3 pl-1.5 font-semibold active:opacity-80"
       >
         <GymBadge gym={current} size="sm" />
         {current.name}
@@ -45,13 +45,13 @@ export default function GymPicker({
                   onChange(gym.id)
                   setOpen(false)
                 }}
-                className="active:bg-surface-2 flex min-h-14 w-full items-center gap-3 rounded-2xl px-2 text-left"
+                className="flex min-h-14 w-full items-center gap-3 rounded-2xl px-2 text-left active:bg-surface-2"
               >
                 <GymBadge gym={gym} />
                 <span className="flex-1">
                   <span className="block font-semibold">{gym.name}</span>
                   {gym.id === defaultGymId && (
-                    <span className="text-muted block text-sm">Salle par défaut</span>
+                    <span className="block text-sm text-muted">Salle par défaut</span>
                   )}
                 </span>
                 {gym.id === value && <Check size={22} className="text-accent" aria-hidden />}
