@@ -1,6 +1,15 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
-import { Check, ChevronRight, FileUp, Moon, ShieldAlert, ShieldCheck, Sun } from 'lucide-react'
+import {
+  Building2,
+  Check,
+  ChevronRight,
+  FileUp,
+  Moon,
+  ShieldAlert,
+  ShieldCheck,
+  Sun,
+} from 'lucide-react'
 import PageHeader from '../../components/PageHeader'
 import Segmented from '../../components/Segmented'
 import { ACCENTS, useAppearance, type Theme } from '../../app/theme'
@@ -76,6 +85,14 @@ export default function ProfilePage() {
             <p className="text-sm text-muted">Utilisé uniquement pour les niveaux de force.</p>
           </div>
           <BodyweightSection />
+        </Section>
+
+        <Section title="Salles">
+          <Link to="/salles" className="-my-2 flex min-h-12 items-center gap-3 font-semibold">
+            <Building2 size={22} className="text-accent" aria-hidden />
+            <span className="flex-1">Mes salles</span>
+            <ChevronRight size={20} className="text-muted" aria-hidden />
+          </Link>
         </Section>
 
         <Section title="Apparence">

@@ -9,3 +9,17 @@ export function parseDecimal(input: string): number | null {
   if (!/^\d+(\.\d+)?$/.test(text)) return null
   return Number(text)
 }
+
+/**
+ * Fourchette de reps saisie : entiers ≥ 1, bornes remises dans l'ordre.
+ * null si l'une des deux manque (pas de fourchette = pas de suggestion de progression).
+ */
+export function normalizeRepRange(
+  min: number | null,
+  max: number | null,
+): { min: number; max: number } | null {
+  if (min === null || max === null) return null
+  const a = Math.max(1, Math.round(min))
+  const b = Math.max(1, Math.round(max))
+  return { min: Math.min(a, b), max: Math.max(a, b) }
+}

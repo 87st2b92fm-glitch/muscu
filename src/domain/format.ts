@@ -5,6 +5,11 @@ const dayFormatter = new Intl.DateTimeFormat('fr-FR', {
   month: 'short',
 })
 
+/** Nombre à la française, au plus deux décimales : « 2,27 ». */
+export function formatNumber(value: number): string {
+  return kgFormatter.format(value)
+}
+
 /** Affiche une charge à la française : 2,5 kg, 1 250 kg (au plus deux décimales). */
 export function formatKg(kg: number): string {
   return `${kgFormatter.format(kg)} kg`
