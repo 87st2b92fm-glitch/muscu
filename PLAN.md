@@ -74,7 +74,8 @@ Principes :
 |---|---|---|
 | 0 | Socle | Vite, Tailwind, PWA (manifest, icônes, apple-touch-icon, standalone), safe areas, thème sombre/clair, barre d'onglets, Vitest, ESLint/Prettier |
 | 1 | Logique métier + tests | `domain/` complet (hors standards de force) |
-| 2 | Base de données | Schéma v1, seed (On Air par défaut, SUAPS, Basic, ~80 exercices), profil et poids de corps, `storage.persist()` |
+| 2 | Base de données | Schéma v1, seed (On Air par défaut, SUAPS, Basic, ~80 exercices **dont ceux que tu fais réellement**), profil et poids de corps, `storage.persist()` |
+| 2 bis | Import Hevy | Lecture du CSV Hevy et des mensurations, écran d'aperçu (salles, correspondance des exercices, valeurs suspectes), import dans la base (voir §6) |
 | 3 | Salles et exercices | CRUD salles (logo, disques, barres), marque et incrément machine par salle, lien entre salles ; bibliothèque et exercices perso |
 | 4 | Séance | Séance vide, marquage des records en direct, sélecteur de salle avec logos, saisie des séries, perf précédente, chrono de repos, supersets, notes, **mode salle** (Wake Lock) |
 | 5 | Modèles et programmes | |
@@ -84,10 +85,31 @@ Principes :
 | 9 | Standards de force | Recherche et vérification → `strengthStandards.json` (source + date), rapport des données non vérifiables |
 | 10 | Carte du corps | SVG face/dos, 5 niveaux + gris, fiche au tap, note sur les sources |
 | 11 | Sauvegarde | Export JSON/CSV, import fusion/remplacement, rappel à 14 jours |
-| 12 | Mensurations (optionnel) | |
+| 12 | Mensurations | Historique et graphiques (données reprises de Hevy à l'étape 2 bis) |
 | 13 | Déploiement | GitHub Actions → GitHub Pages, guide d'installation sur iPhone |
 
 ## 5. Limites iOS connues
 - Pas de vibration (`navigator.vibrate` absent de Safari iOS) ; le son est débloqué au premier tap de la séance.
 - Aucune alerte quand l'app est en arrière-plan (il faudrait un serveur de notifications) ; le chrono reste juste au retour.
 - Service worker et persistance du stockage uniquement en HTTPS : l'installation hors ligne se teste réellement sur GitHub Pages.
+
+## 6. Import Hevy (étape 2 bis)
+
+Analyse de ton export du 2 novembre 2026 : **310 séances, 5 455 séries, de juillet 2023 à novembre 2026**, 137 noms d'exercices, plus un fichier de mensurations (4 dates).
+
+**Format** : une ligne par série. Colonnes : `title`, `start_time`, `end_time`, `exercise_title`, `superset_id`, `exercise_notes`, `set_index`, `set_type`, `weight_kg`, `reps`, `rpe`. Les dates sont au format français (« 1 nov. 2026, 13:48 ») et les noms d'exercices sont ceux affichés dans ton Hevy.
+
+| Point | Traitement |
+|---|---|
+| Salle | Absente de l'export. Attribution **par périodes** (« de telle date à telle date : SUAPS »), avec On Air par défaut et une correction possible séance par séance dans l'aperçu. |
+| Exercices | Correspondance proposée automatiquement avec la bibliothèque, validée dans l'aperçu. Les variantes du même exercice (ex. « Adduction Hanche » / « Adduction Hanche (Machine) ») sont fusionnées seulement si tu le confirmes. L'app retient tes choix pour un import suivant. |
+| Types de série | `normal` → normale, `warmup` → échauffement, `dropset` → dégressive, `failure` → échec. |
+| RPE (34 séries) | Converti en RIR = 10 − RPE. |
+| Poids vide | Exercice au poids du corps (tractions, relevés de genoux…) ou lest de 0 kg pour un exercice lesté. |
+| Charges non rondes (11,3 ; 22,6 kg…) | Gardées telles quelles. |
+| Notes d'exercice, supersets | Repris. |
+| Cardio (1 série de vélo) | Ignoré. |
+| Valeurs suspectes | Signalées dans l'aperçu pour correction, ex. 107 reps au tirage convergent le 2 oct. 2023. |
+| Poids de corps | Repris du fichier de mensurations (62 kg en juillet 2023, 64 kg en février 2026). Entre deux pesées, **interpolation linéaire** pour la charge effective des exercices lestés. |
+| Mensurations | Toutes reprises (cou, épaules, poitrine, biceps, avant-bras, abdomen, taille, hanches, cuisses, mollets). |
+| Confidentialité | Tes fichiers ne sont jamais committés. Les tests utilisent des extraits fictifs au même format. |

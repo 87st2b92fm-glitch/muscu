@@ -8,3 +8,7 @@ coverage/
 .vscode/
 .idea/
 .claude/launch.json
+
+# Exports personnels (Hevy, sauvegardes) : jamais sur GitHub
+*.csv
+imports/
