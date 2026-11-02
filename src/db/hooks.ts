@@ -25,7 +25,12 @@ export function useGyms(): GymLook[] | undefined {
 }
 
 export function useExercises() {
-  return useLiveQuery(() => db.exercises.orderBy('name').filter((e) => !e.archived).toArray())
+  return useLiveQuery(() =>
+    db.exercises
+      .orderBy('name')
+      .filter((e) => !e.archived)
+      .toArray(),
+  )
 }
 
 /** Pesées de la plus récente à la plus ancienne. */
