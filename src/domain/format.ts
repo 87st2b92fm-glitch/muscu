@@ -4,6 +4,11 @@ const dayFormatter = new Intl.DateTimeFormat('fr-FR', {
   day: 'numeric',
   month: 'short',
 })
+const dayWithYearFormatter = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+})
 
 /** Nombre à la française, au plus deux décimales : « 2,27 ». */
 export function formatNumber(value: number): string {
@@ -34,11 +39,15 @@ export function formatDuration(minutes: number): string {
   return `${h} h ${String(m).padStart(2, '0')}`
 }
 
-/** Date relative pour le fil d'accueil : « Aujourd'hui », « Hier », sinon « lun. 2 nov. ». */
+/**
+ * Date relative : « Aujourd'hui », « Hier », « lun. 2 nov. » cette année, « 6 août 2025 » avant.
+ */
 export function formatDay(date: Date, now: Date = new Date()): string {
   const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
   const days = Math.round((startOfDay(now) - startOfDay(date)) / 86_400_000)
   if (days === 0) return 'Aujourd’hui'
   if (days === 1) return 'Hier'
-  return dayFormatter.format(date)
+  return date.getFullYear() === now.getFullYear()
+    ? dayFormatter.format(date)
+    : dayWithYearFormatter.format(date)
 }

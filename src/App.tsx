@@ -11,6 +11,7 @@ import GymsPage from './features/gyms/GymsPage'
 import WorkoutPage from './features/workout/WorkoutPage'
 import TemplateEditPage from './features/templates/TemplateEditPage'
 import WorkoutDetailPage from './features/history/WorkoutDetailPage'
+import ExercisePerformancePage from './features/performance/ExercisePerformancePage'
 import WorkoutDonePage from './features/workout/WorkoutDonePage'
 import GymEditPage from './features/gyms/GymEditPage'
 
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="exercices" element={<ExercisesPage />} />
         <Route path="exercices/:id" element={<ExerciseEditPage />} />
         <Route path="performance" element={<PerformancePage />} />
+        <Route path="performance/:id" element={<ExercisePerformancePage />} />
         <Route path="profil" element={<ProfilePage />} />
         <Route path="import-hevy" element={<ImportHevyPage />} />
         <Route path="modeles/:id" element={<TemplateEditPage />} />

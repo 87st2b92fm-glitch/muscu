@@ -64,4 +64,8 @@ describe('formatDay', () => {
   it('affiche la date courte au-delà', () => {
     expect(formatDay(new Date(2026, 9, 29, 18, 0), now)).toBe('jeu. 29 oct.')
   })
+
+  it('ajoute l’année pour une autre année', () => {
+    expect(formatDay(new Date(2025, 7, 6, 18, 0), now)).toBe('6 août 2025')
+  })
 })

@@ -4,7 +4,7 @@ Référence : [CAHIER_DES_CHARGES.md](CAHIER_DES_CHARGES.md). Ce document fixe l
 
 ## 1. Architecture
 
-**Stack** : Vite + React + TypeScript (strict), Tailwind v4, Dexie 4 (`useLiveQuery`), vite-plugin-pwa, Recharts, Vitest, React Router en **HashRouter** (compatible GitHub Pages et hors ligne sans configuration serveur).
+**Stack** : Vite + React + TypeScript (strict), Tailwind v4, Dexie 4 (`useLiveQuery`), vite-plugin-pwa, graphiques en SVG faits main (plus légers que Recharts pour une app hors ligne), Vitest, React Router en **HashRouter** (compatible GitHub Pages et hors ligne sans configuration serveur).
 
 Pas de gestionnaire d'état global : **la base Dexie est la seule source de vérité**. Une séance en cours est enregistrée à chaque tap et survit à une fermeture de l'app par iOS.
 

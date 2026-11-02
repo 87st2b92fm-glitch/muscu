@@ -6,10 +6,13 @@ export default function GymFilter({
   gyms,
   value,
   onChange,
+  allowAll = true,
 }: {
   gyms: GymLook[]
   value: string | null
   onChange: (gymId: string | null) => void
+  /** false : une salle est toujours choisie (pas de puce « Toutes »). */
+  allowAll?: boolean
 }) {
   const chip = (selected: boolean) =>
     `flex min-h-11 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors ${
@@ -22,15 +25,17 @@ export default function GymFilter({
       aria-label="Filtrer par salle"
       className="-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4"
     >
-      <button
-        type="button"
-        role="radio"
-        aria-checked={value === null}
-        onClick={() => onChange(null)}
-        className={chip(value === null)}
-      >
-        Toutes
-      </button>
+      {allowAll && (
+        <button
+          type="button"
+          role="radio"
+          aria-checked={value === null}
+          onClick={() => onChange(null)}
+          className={chip(value === null)}
+        >
+          Toutes
+        </button>
+      )}
       {gyms.map((gym) => (
         <button
           key={gym.id}
