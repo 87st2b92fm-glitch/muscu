@@ -24,8 +24,11 @@ import {
   updateBlock,
   updateSet,
 } from '../../db/workouts'
-import { formatKg, formatNumber } from '../../domain/format'
+import { formatNumber } from '../../domain/format'
+import { describeSuggestion, suggestNext } from '../../domain/progression'
 import type { RecordKind, SetType } from '../../domain/types'
+import { updateExercise } from '../../db/exercises'
+import RepRangeField from '../exercises/RepRangeField'
 import SetRowView, { SET_GRID } from './SetRowView'
 import { unlockAudio } from './sound'
 import type { EditTarget } from './ValueSheet'
@@ -38,17 +41,6 @@ const SET_TYPES: { value: SetType; label: string }[] = [
 ]
 const RIR_VALUES = [0, 1, 2, 3, 4, 5]
 const DEFAULT_KG_STEP = 2.5
-
-function suggestionText(context: ExerciseContext): string | null {
-  const s = context.suggestion
-  if (!s) return null
-  if (s.action === 'increase') {
-    return s.kg === null
-      ? `Toutes tes séries ont atteint le haut de la fourchette : monte la charge (${s.reps} reps).`
-      : `Suggestion : ${formatKg(s.kg)} × ${s.reps}`
-  }
-  return `Suggestion : ${formatKg(s.kg)}, vise ${s.reps.join(' / ')} reps`
-}
 
 export default function ExerciseBlock({
   workout,
@@ -79,7 +71,11 @@ export default function ExerciseBlock({
   const exercise = context?.exercise
   const bodyweight = exercise?.loadMode === 'bodyweight'
   const kgStep = context?.incrementKg ?? DEFAULT_KG_STEP
-  const suggestion = context ? suggestionText(context) : null
+  // Fourchette du modèle si elle existe, sinon celle de l'exercice.
+  const repRange = block.repRange ?? exercise?.repRange ?? null
+  const suggestion = context
+    ? describeSuggestion(suggestNext(context.previous, repRange, context.incrementKg))
+    : null
   let workingIndex = 0
 
   return (
@@ -120,6 +116,16 @@ export default function ExerciseBlock({
           {suggestion}
         </p>
       )}
+      {!repRange && exercise && context && context.previous.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          className="flex items-start gap-2 rounded-2xl border border-dashed border-border px-3 py-2 text-left text-sm text-muted"
+        >
+          <Lightbulb size={16} className="mt-0.5 shrink-0" aria-hidden />
+          Ajoute une fourchette de reps pour recevoir une suggestion de charge.
+        </button>
+      )}
 
       <div className={`${SET_GRID} px-1.5 text-xs font-semibold text-muted`}>
         <span className="text-center">Série</span>
@@ -155,6 +161,7 @@ export default function ExerciseBlock({
                   unit: 'kg',
                   step: kgStep,
                   integer: false,
+                  barbell: context?.barbell,
                 })
               }
               onReps={() =>
@@ -256,6 +263,19 @@ export default function ExerciseBlock({
         title={exercise?.name ?? 'Exercice'}
       >
         <div className="flex flex-col gap-4">
+          {exercise && (
+            <RepRangeField
+              key={exercise.id}
+              value={exercise.repRange}
+              emptyHint="Pour cet exercice, dans toutes tes séances. Ex. 8 et 12."
+              onCommit={(range) => void updateExercise(exercise.id, { repRange: range })}
+            />
+          )}
+          {block.repRange && (
+            <p className="-mt-2 text-xs text-muted">
+              Le modèle de cette séance impose {block.repRange.min}–{block.repRange.max} reps.
+            </p>
+          )}
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-semibold text-muted">Notes</span>
             <textarea

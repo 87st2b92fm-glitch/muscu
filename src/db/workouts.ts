@@ -78,6 +78,7 @@ export async function startWorkout(options: {
       supersetId: b.supersetId,
       notes: '',
       restSec: b.restSec,
+      repRange: b.repRange,
     },
     count: b.sets,
     repRange: b.repRange,

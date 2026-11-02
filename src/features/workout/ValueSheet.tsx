@@ -1,7 +1,9 @@
 import { Minus, Plus } from 'lucide-react'
 import Button from '../../components/Button'
+import PlateStack from '../../components/PlateStack'
 import Sheet from '../../components/Sheet'
-import { formatNumber } from '../../domain/format'
+import { loadBar, loadBarAbove, type PlateStock } from '../../domain/plates'
+import { formatKg, formatNumber } from '../../domain/format'
 import { parseDecimal, round2 } from '../../domain/units'
 
 /** Ce qu'on modifie : la charge ou les reps d'une série (la valeur est relue à chaque rendu). */
@@ -13,11 +15,33 @@ export interface EditTarget {
   /** Pas des boutons − / + (incrément de la machine pour une charge, 1 pour les reps). */
   step: number
   integer: boolean
+  /** Barre et disques : affiche les disques à mettre pour la charge choisie. */
+  barbell?: { barKg: number; stock: PlateStock[] } | null
 }
 
 export interface ValueEdit extends EditTarget {
   value: number
   onChange: (value: number) => void
+}
+
+function PlateHint({ value, barKg, stock }: { value: number; barKg: number; stock: PlateStock[] }) {
+  const below = loadBar(value, barKg, stock)
+  if (!below)
+    return <p className="text-center text-sm text-muted">Moins que la barre ({formatKg(barKg)}).</p>
+  if (below.exact) {
+    return (
+      <div className="rounded-2xl bg-surface-2 px-4 py-2">
+        <PlateStack perSide={below.perSide} />
+      </div>
+    )
+  }
+  const above = loadBarAbove(value, barKg, stock)
+  return (
+    <p className="rounded-2xl bg-gold-soft px-4 py-3 text-center text-sm text-gold">
+      Pas réalisable avec les disques de la salle : {formatKg(below.totalKg)}
+      {above ? ` ou ${formatKg(above.totalKg)}` : ''}.
+    </p>
+  )
 }
 
 /** Saisie au pouce : très gros chiffres, − / + rapides, ou frappe directe au clavier. */
@@ -70,6 +94,7 @@ export default function ValueSheet({
               <Plus size={28} aria-hidden />
             </button>
           </div>
+          {edit.barbell && <PlateHint value={edit.value} {...edit.barbell} />}
           <p className="text-center text-sm text-muted">
             − / + : {formatNumber(edit.step)} {edit.unit}
           </p>

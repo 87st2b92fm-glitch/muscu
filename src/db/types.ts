@@ -145,6 +145,8 @@ export interface WorkoutBlock {
   supersetId: string | null
   notes: string
   restSec: number | null
+  /** Fourchette du modèle d'origine, prioritaire sur celle de l'exercice. */
+  repRange?: RepRange | null
 }
 
 export interface Workout {

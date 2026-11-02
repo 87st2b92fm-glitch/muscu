@@ -1,3 +1,4 @@
+import { formatKg } from './format'
 import { round2 } from './units'
 import type { RepRange, SetEntry } from './types'
 
@@ -44,4 +45,15 @@ export function suggestNext(
     kg: topKg,
     reps: topSets.map((s) => Math.min(range.max, s.reps + 1)),
   }
+}
+
+/** Suggestion en une phrase, pour l'écran de séance et la fiche performance. */
+export function describeSuggestion(s: Suggestion | null): string | null {
+  if (!s) return null
+  if (s.action === 'increase') {
+    return s.kg === null
+      ? `Toutes tes séries ont atteint le haut de la fourchette : monte la charge (${s.reps} reps).`
+      : `Suggestion : ${formatKg(s.kg)} × ${s.reps}`
+  }
+  return `Suggestion : ${formatKg(s.kg)}, vise ${s.reps.join(' / ')} reps`
 }

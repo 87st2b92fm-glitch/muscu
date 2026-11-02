@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { loadBar } from './plates'
+import { loadBar, loadBarAbove } from './plates'
 
 const fullStock = [25, 20, 15, 10, 5, 2.5, 1.25].map((kg) => ({ kg, pairs: 4 }))
 
@@ -51,5 +51,31 @@ describe('loadBar', () => {
       totalKg: 47.22,
       exact: true,
     })
+  })
+})
+
+describe('loadBarAbove', () => {
+  it('donne la charge réalisable juste au-dessus', () => {
+    expect(loadBarAbove(101, 20, fullStock)).toEqual({
+      perSide: [25, 15, 1.25],
+      totalKg: 102.5,
+      exact: false,
+    })
+  })
+
+  it('renvoie la charge exacte si elle est réalisable', () => {
+    expect(loadBarAbove(100, 20, fullStock)).toEqual({
+      perSide: [25, 15],
+      totalKg: 100,
+      exact: true,
+    })
+  })
+
+  it('renvoie la barre seule sous son poids', () => {
+    expect(loadBarAbove(15, 20, fullStock)).toEqual({ perSide: [], totalKg: 20, exact: false })
+  })
+
+  it('renvoie null si le stock ne suffit pas', () => {
+    expect(loadBarAbove(500, 20, [{ kg: 20, pairs: 2 }])).toBeNull()
   })
 })

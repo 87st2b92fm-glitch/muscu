@@ -1,4 +1,5 @@
 import { bodyweightAt } from '../domain/bodyweight'
+import type { PlateStock } from '../domain/plates'
 import { effectiveKg } from '../domain/load'
 import { suggestNext, type Suggestion } from '../domain/progression'
 import { recordScope, type MachineLink } from '../domain/recordScope'
@@ -19,6 +20,8 @@ export interface ExerciseContext {
   suggestion: Suggestion | null
   /** Poids de corps actuel, pour la charge effective des exercices lestés. */
   bodyweightKg: number | null
+  /** Barre et disques de la salle, pour un exercice à la barre (calculateur de disques). */
+  barbell: { barKg: number; stock: PlateStock[] } | null
 }
 
 export interface ContextData {
@@ -63,6 +66,10 @@ export function buildContext(
     incrementKg,
     suggestion: suggestNext(previous, repRange ?? exercise.repRange, incrementKg),
     bodyweightKg: bodyweightAt(Date.now(), data.bodyweights),
+    barbell:
+      exercise.equipment === 'barbell' && data.gym.bars[0]
+        ? { barKg: data.gym.bars[0].kg, stock: data.gym.plates }
+        : null,
   }
 }
 

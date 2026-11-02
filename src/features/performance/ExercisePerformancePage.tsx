@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { ChevronRight, Info, SquarePen } from 'lucide-react'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { ChevronRight, Info, Lightbulb, SquarePen } from 'lucide-react'
 import GymFilter from '../../components/GymFilter'
 import PageHeader from '../../components/PageHeader'
 import Segmented from '../../components/Segmented'
 import { Chip } from '../../components/form'
 import LineChart from '../../components/charts/LineChart'
+import { buildContext, loadContextData } from '../../db/exerciseContext'
 import { useGyms } from '../../db/hooks'
+import { describeSuggestion } from '../../domain/progression'
 import { formatDay, formatKg, formatNumber, formatSet } from '../../domain/format'
 import type { SessionPoint } from '../../domain/progress'
 import type { RecordEntry } from '../../domain/records'
@@ -60,6 +63,12 @@ export default function ExercisePerformancePage() {
   const performances = usePerformances(gymId)
   const [metric, setMetric] = useState<Metric>('e1rm')
   const [rangeDays, setRangeDays] = useState<number | null>(365)
+  // Ce que proposera la prochaine séance dans la salle choisie (même calcul qu'en séance).
+  const next = useLiveQuery(async () => {
+    if (!gymId) return null
+    const data = await loadContextData([id], gymId)
+    return data ? buildContext(data, id, null) : null
+  }, [id, gymId])
 
   const performance = performances?.find((p) => p.exercise.id === id)
   if (performances === undefined) return <PageHeader title="Performance" back />
@@ -101,6 +110,29 @@ export default function ExercisePerformancePage() {
             <Info size={16} className="mt-0.5 shrink-0" aria-hidden />
             Charges avec ton poids du corps (lest + poids du corps à la date de la séance).
           </p>
+        )}
+
+        {next && next.previous.length > 0 && (
+          <section className="flex flex-col gap-1.5 rounded-3xl bg-accent/10 p-4">
+            <p className="flex items-center gap-2 text-sm font-semibold text-accent">
+              <Lightbulb size={16} aria-hidden />
+              Prochaine séance
+            </p>
+            <p className="font-semibold">
+              {describeSuggestion(next.suggestion) ?? (
+                <Link to={`/exercices/${exercise.id}`} className="text-accent">
+                  Ajoute une fourchette de reps pour recevoir une suggestion
+                </Link>
+              )}
+            </p>
+            <p className="text-sm text-muted">
+              Dernière fois :{' '}
+              {next.previous
+                .filter((s) => s.type !== 'warmup')
+                .map((s) => `${formatNumber(s.kg)} × ${s.reps}`)
+                .join(', ')}
+            </p>
+          </section>
         )}
 
         <section className="grid grid-cols-2 gap-3" aria-label="Records">

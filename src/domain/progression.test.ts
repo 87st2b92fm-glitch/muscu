@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { suggestNext } from './progression'
+import { describeSuggestion, suggestNext } from './progression'
 import type { SetEntry, SetType } from './types'
 
 const s = (kg: number, reps: number, type: SetType = 'normal'): SetEntry => ({ kg, reps, type })
@@ -61,5 +61,29 @@ describe('suggestNext', () => {
       kg: 12.5,
       reps: 5,
     })
+  })
+})
+
+describe('describeSuggestion', () => {
+  it('décrit une montée de charge', () => {
+    expect(describeSuggestion({ action: 'increase', fromKg: 60, kg: 62.5, reps: 8 })).toBe(
+      'Suggestion : 62,5 kg × 8',
+    )
+  })
+
+  it('décrit une montée sans incrément connu', () => {
+    expect(describeSuggestion({ action: 'increase', fromKg: 60, kg: null, reps: 8 })).toMatch(
+      /monte la charge \(8 reps\)/,
+    )
+  })
+
+  it('décrit un objectif de reps à charge égale', () => {
+    expect(describeSuggestion({ action: 'keep', kg: 60, reps: [12, 11] })).toBe(
+      'Suggestion : 60 kg, vise 12 / 11 reps',
+    )
+  })
+
+  it('ne dit rien sans suggestion', () => {
+    expect(describeSuggestion(null)).toBeNull()
   })
 })

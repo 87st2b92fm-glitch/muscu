@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { ClipboardPlus, FolderPlus, Library, Plus } from 'lucide-react'
+import { ClipboardPlus, Disc3, FolderPlus, Library, Plus } from 'lucide-react'
 import PageHeader from '../../components/PageHeader'
 import SectionHeader from '../../components/SectionHeader'
 import { useGyms, useProfile } from '../../db/hooks'
@@ -97,6 +97,10 @@ export default function TrainingPage() {
             Exercices
           </Link>
         </div>
+        <Link to="/disques" className={`${tile} justify-start px-5`}>
+          <Disc3 size={20} className="text-accent" aria-hidden />
+          Calculateur de disques
+        </Link>
 
         {isDemo && (
           <p className="rounded-2xl border border-dashed border-border px-4 py-3 text-sm text-muted">
