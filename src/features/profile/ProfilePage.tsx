@@ -1,67 +1,110 @@
-import { Check, Moon, Sun } from 'lucide-react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { Check, Moon, ShieldAlert, ShieldCheck, Sun } from 'lucide-react'
 import PageHeader from '../../components/PageHeader'
+import Segmented from '../../components/Segmented'
 import { ACCENTS, useAppearance, type Theme } from '../../app/theme'
+import { requestPersistentStorage } from '../../db/db'
+import { updateProfile, useProfile } from '../../db/hooks'
+import type { Sex } from '../../db/types'
+import BodyweightSection from './BodyweightSection'
 
 const THEMES: { value: Theme; label: string; icon: typeof Moon }[] = [
   { value: 'dark', label: 'Sombre', icon: Moon },
   { value: 'light', label: 'Clair', icon: Sun },
 ]
 
+const SEXES: { value: Sex; label: string }[] = [
+  { value: 'male', label: 'Homme' },
+  { value: 'female', label: 'Femme' },
+]
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="flex flex-col gap-3">
+      <h2 className="text-muted px-1 text-sm font-semibold">{title}</h2>
+      <div className="bg-surface flex flex-col gap-5 rounded-3xl p-4">{children}</div>
+    </section>
+  )
+}
+
+function StorageStatus() {
+  const [persisted, setPersisted] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    void requestPersistentStorage().then(setPersisted)
+  }, [])
+
+  if (persisted === null) return null
+  const Icon = persisted ? ShieldCheck : ShieldAlert
+  return (
+    <div className="flex items-start gap-3">
+      <Icon
+        size={22}
+        className={`mt-0.5 shrink-0 ${persisted ? 'text-accent' : 'text-gold'}`}
+        aria-hidden
+      />
+      <div>
+        <p className="font-semibold">{persisted ? 'Données protégées' : 'Données non protégées'}</p>
+        <p className="text-muted text-sm">
+          {persisted
+            ? 'iOS ne supprimera pas tes données pour libérer de la place.'
+            : 'iOS peut effacer les données d’un site peu utilisé. Installe l’app sur l’écran d’accueil et fais des sauvegardes régulières.'}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export default function ProfilePage() {
   const { theme, setTheme, accent, setAccent } = useAppearance()
+  const profile = useProfile()
 
   return (
     <>
       <PageHeader title="Profil" />
       <div className="flex flex-col gap-6 px-4">
-        <section className="flex flex-col gap-3">
-          <h2 className="text-muted px-1 text-sm font-semibold">Apparence</h2>
-          <div className="bg-surface flex flex-col gap-5 rounded-3xl p-4">
-            <div
-              role="radiogroup"
-              aria-label="Thème"
-              className="bg-surface-2 flex gap-1 rounded-2xl p-1"
-            >
-              {THEMES.map(({ value, label, icon: Icon }) => (
+        <Section title="Moi">
+          <div className="flex flex-col gap-2">
+            <p className="font-semibold">Sexe</p>
+            <Segmented
+              label="Sexe"
+              options={SEXES}
+              value={profile?.sex ?? null}
+              onChange={(sex) => void updateProfile({ sex })}
+            />
+            <p className="text-muted text-sm">Utilisé uniquement pour les niveaux de force.</p>
+          </div>
+          <BodyweightSection />
+        </Section>
+
+        <Section title="Apparence">
+          <Segmented label="Thème" options={THEMES} value={theme} onChange={setTheme} />
+          <div>
+            <p className="mb-3 font-semibold">Couleur d’accent</p>
+            <div role="radiogroup" aria-label="Couleur d’accent" className="flex justify-between">
+              {ACCENTS.map(({ value, label, swatch }) => (
                 <button
                   key={value}
                   type="button"
                   role="radio"
-                  aria-checked={theme === value}
-                  onClick={() => setTheme(value)}
-                  className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl font-semibold transition-colors ${
-                    theme === value ? 'bg-surface text-text shadow-sm' : 'text-muted'
-                  }`}
+                  aria-checked={accent === value}
+                  aria-label={label}
+                  onClick={() => setAccent(value)}
+                  className="ring-offset-surface aria-checked:ring-text flex size-12 items-center justify-center rounded-full ring-offset-2 transition-shadow aria-checked:ring-2"
+                  style={{ backgroundColor: swatch }}
                 >
-                  <Icon size={18} aria-hidden />
-                  {label}
+                  {accent === value && (
+                    <Check size={22} strokeWidth={3} className="text-black/80" aria-hidden />
+                  )}
                 </button>
               ))}
             </div>
-
-            <div>
-              <p className="mb-3 font-semibold">Couleur d’accent</p>
-              <div role="radiogroup" aria-label="Couleur d’accent" className="flex justify-between">
-                {ACCENTS.map(({ value, label, swatch }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    role="radio"
-                    aria-checked={accent === value}
-                    aria-label={label}
-                    onClick={() => setAccent(value)}
-                    className="ring-offset-surface aria-checked:ring-text flex size-12 items-center justify-center rounded-full ring-offset-2 transition-shadow aria-checked:ring-2"
-                    style={{ backgroundColor: swatch }}
-                  >
-                    {accent === value && (
-                      <Check size={22} strokeWidth={3} className="text-black/80" aria-hidden />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
-        </section>
+        </Section>
+
+        <Section title="Stockage">
+          <StorageStatus />
+        </Section>
       </div>
     </>
   )

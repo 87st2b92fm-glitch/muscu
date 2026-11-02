@@ -3,7 +3,7 @@ export interface GymLook {
   id: string
   name: string
   color: string
-  /** URL d'image (logo importé depuis la pellicule). */
+  /** Logo en data URL (importé depuis la pellicule). */
   logo?: string
 }
 

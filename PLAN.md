@@ -20,7 +20,7 @@ src/
     strengthLevel.ts interpolation poids de corps × sexe, niveau suivant, charge à atteindre
     backup.ts, csv.ts  export, validation, fusion ou remplacement à l'import
   db/          schema.ts (versions et migrations Dexie), seed.ts
-  data/        exercises.fr.json, strengthStandards.json, muscles.ts
+  data/        exercises.ts (bibliothèque typée), strengthStandards.json, muscles.ts
   features/    workout/ history/ performance/ exercises/ templates/ gyms/ profile/ backup/
   components/  composants d'interface (boutons ≥ 44 px, feuilles, steppers +/-…)
   hooks/       useRestTimer, useWakeLock, useActiveWorkout
@@ -39,13 +39,15 @@ src/
 |---|---|
 | `profile` (ligne unique) | sexe, date de naissance ?, réglages : **RIR activé (oui/non)**, **son de fin de repos (oui/non)**, repos par défaut, salle par défaut, date de dernière sauvegarde |
 | `bodyweights` | id, date, kg |
-| `gyms` | id, nom, ordre, **logo ? (image)**, couleur, `plates: {kg, paires}[]`, `bars: {nom, kg}[]`, incrément des haltères |
-| `exercises` | id, nom, catégorie (`libre` / `machine`), équipement, muscles principaux et secondaires, `loadMode` (`charge` / `lest`), **fourchette de reps ?**, repos, `standardKey ?`, personnalisé, archivé |
+| `gyms` | id, nom, ordre, **logo ? (data URL, image réduite)**, couleur, `plates: {kg, paires}[]`, `bars: {nom, kg}[]`, incrément des haltères |
+| `exercises` | id, nom, catégorie (`free` / `machine`), équipement, muscles principaux et secondaires, `loadMode` (`external` / `bodyweight` = lest + poids du corps), **fourchette de reps ?**, repos, `standardKey ?`, **alias (noms Hevy)**, personnalisé, archivé |
 | `machineSetups` | exercice × salle : marque/modèle ?, **incrément ?**, `linkGroupId ?` |
 | `templates` | nom, notes, blocs `[{exerciseId, supersetId ?, séries cibles, fourchette de reps ?, repos}]` |
 | `folders` | nom, ordre, liste ordonnée de modèles, rotation activée (programme) et prochain modèle |
 | `workouts` | salle, modèle d'origine ?, début, fin, notes, statut, blocs d'exercices (ordre, superset, notes), `restEndsAt` |
 | `sets` | séance, bloc, exercice, salle (dupliquée exprès), type (échauffement / normale / dégressive / échec), reps, kg, RIR ?, horodatage de validation. Index `[exerciseId+gymId]` et date |
+| `measurements` | date, mensurations facultatives (cou, épaules, poitrine, biceps, avant-bras, abdomen, taille, hanches, cuisses, mollets, masse grasse) |
+| `importMappings` | nom Hevy → exercice, retenu d'un import à l'autre |
 
 Principes :
 - **Records recalculés** à partir des `sets` (jamais stockés) : toujours justes, même après modification d'une ancienne séance.

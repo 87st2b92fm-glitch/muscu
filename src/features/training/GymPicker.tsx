@@ -2,16 +2,18 @@ import { Check, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import GymBadge from '../../components/GymBadge'
 import Sheet from '../../components/Sheet'
-import { DEFAULT_GYM_ID, type GymLook } from '../../data/defaultGyms'
+import type { GymLook } from '../../data/defaultGyms'
 
 /** Puce « salle du jour » qui ouvre la liste des salles. */
 export default function GymPicker({
   gyms,
   value,
+  defaultGymId,
   onChange,
 }: {
   gyms: GymLook[]
   value: string
+  defaultGymId?: string
   onChange: (gymId: string) => void
 }) {
   const [open, setOpen] = useState(false)
@@ -48,7 +50,7 @@ export default function GymPicker({
                 <GymBadge gym={gym} />
                 <span className="flex-1">
                   <span className="block font-semibold">{gym.name}</span>
-                  {gym.id === DEFAULT_GYM_ID && (
+                  {gym.id === defaultGymId && (
                     <span className="text-muted block text-sm">Salle par défaut</span>
                   )}
                 </span>

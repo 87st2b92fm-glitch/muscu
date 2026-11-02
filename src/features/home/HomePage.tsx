@@ -4,7 +4,7 @@ import { Plus, Sparkles } from 'lucide-react'
 import GymFilter from '../../components/GymFilter'
 import PageHeader from '../../components/PageHeader'
 import SectionHeader from '../../components/SectionHeader'
-import { DEFAULT_GYMS } from '../../data/defaultGyms'
+import { useGyms } from '../../db/hooks'
 import { formatKg } from '../../domain/format'
 import { DEMO_WORKOUTS } from './demoWorkouts'
 import WorkoutCard from './WorkoutCard'
@@ -41,6 +41,7 @@ function WeekSummary({
 }
 
 export default function HomePage() {
+  const gyms = useGyms()
   const [gymId, setGymId] = useState<string | null>(null)
   const [now] = useState(() => Date.now())
 
@@ -67,7 +68,7 @@ export default function HomePage() {
           Aperçu avec des séances d’exemple : elles disparaîtront dès ta première vraie séance.
         </p>
 
-        <GymFilter gyms={DEFAULT_GYMS} value={gymId} onChange={setGymId} />
+        {gyms && <GymFilter gyms={gyms} value={gymId} onChange={setGymId} />}
 
         <WeekSummary
           sessions={lastWeek.length}
