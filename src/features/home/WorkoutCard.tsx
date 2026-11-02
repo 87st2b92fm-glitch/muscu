@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { Trophy } from 'lucide-react'
 import GymBadge from '../../components/GymBadge'
 import {
@@ -29,8 +30,8 @@ export default function WorkoutCard({ workout }: { workout: WorkoutSummary }) {
   const records = workout.exercises.reduce((n, e) => n + e.records.length, 0)
   const hidden = workout.exercises.length - VISIBLE_EXERCISES
 
-  return (
-    <article className="flex flex-col gap-4 rounded-3xl bg-surface p-4">
+  const content = (
+    <>
       <header className="flex items-center gap-3">
         <GymBadge gym={workout.gym} />
         <div className="min-w-0">
@@ -81,6 +82,18 @@ export default function WorkoutCard({ workout }: { workout: WorkoutSummary }) {
           </li>
         )}
       </ul>
-    </article>
+    </>
+  )
+
+  // Les séances d'exemple ne mènent nulle part.
+  return workout.id.startsWith('demo-') ? (
+    <article className="flex flex-col gap-4 rounded-3xl bg-surface p-4">{content}</article>
+  ) : (
+    <Link
+      to={`/seances/${workout.id}`}
+      className="flex flex-col gap-4 rounded-3xl bg-surface p-4 transition-transform active:scale-[0.99]"
+    >
+      {content}
+    </Link>
   )
 }

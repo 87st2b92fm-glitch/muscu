@@ -19,15 +19,15 @@ export interface SummaryInput {
 
 const UNKNOWN_GYM: GymLook = { id: '?', name: 'Salle supprimée', color: '#6b7280' }
 
-/**
- * Résumés des séances terminées, de la plus récente à la plus ancienne : durée, volume
- * (charge effective), meilleure série par exercice et records battus.
- */
-export function buildSummaries(input: SummaryInput): WorkoutSummary[] {
-  const done = input.workouts.filter((w) => w.status === 'done')
-  const doneIds = new Set(done.map((w) => w.id))
+/** Charge effective et records battus de chaque série validée des séances terminées. */
+export interface ScoredHistory {
+  flags: Map<string, RecordKind[]>
+  /** Charge effective (poids du corps inclus) par identifiant de série. */
+  effective: Map<string, number>
+}
 
-  // Charge effective et portée de chaque série, puis records sur tout l'historique.
+export function scoreHistory(input: SummaryInput): ScoredHistory {
+  const doneIds = new Set(input.workouts.filter((w) => w.status === 'done').map((w) => w.id))
   const history: HistorySet[] = []
   for (const set of input.sets) {
     const exercise = input.exercises.get(set.exerciseId)
@@ -44,8 +44,16 @@ export function buildSummaries(input: SummaryInput): WorkoutSummary[] {
       kg,
     })
   }
-  const flags = recordFlags(history)
-  const effective = new Map(history.map((s) => [s.id, s.kg]))
+  return { flags: recordFlags(history), effective: new Map(history.map((s) => [s.id, s.kg])) }
+}
+
+/**
+ * Résumés des séances terminées, de la plus récente à la plus ancienne : durée, volume
+ * (charge effective), meilleure série par exercice et records battus.
+ */
+export function buildSummaries(input: SummaryInput): WorkoutSummary[] {
+  const done = input.workouts.filter((w) => w.status === 'done')
+  const { flags, effective } = scoreHistory(input)
 
   const setsByBlock = new Map<string, SetRow[]>()
   for (const set of input.sets) {
