@@ -9,6 +9,7 @@ import ProfilePage from './features/profile/ProfilePage'
 import ImportHevyPage from './features/import/ImportHevyPage'
 import GymsPage from './features/gyms/GymsPage'
 import WorkoutPage from './features/workout/WorkoutPage'
+import TemplateEditPage from './features/templates/TemplateEditPage'
 import WorkoutDonePage from './features/workout/WorkoutDonePage'
 import GymEditPage from './features/gyms/GymEditPage'
 
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="performance" element={<PerformancePage />} />
         <Route path="profil" element={<ProfilePage />} />
         <Route path="import-hevy" element={<ImportHevyPage />} />
+        <Route path="modeles/:id" element={<TemplateEditPage />} />
         <Route path="salles" element={<GymsPage />} />
         <Route path="salles/:id" element={<GymEditPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

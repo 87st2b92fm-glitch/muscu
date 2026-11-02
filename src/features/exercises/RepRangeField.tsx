@@ -13,9 +13,14 @@ const inputClass =
 export default function RepRangeField({
   value,
   onCommit,
+  fallback = null,
+  emptyHint = 'Renseigne les deux bornes, ex. 8 et 12.',
 }: {
   value: RepRange | null
   onCommit: (value: RepRange | null) => void
+  /** Fourchette utilisée si ce champ reste vide (affichée en grisé). */
+  fallback?: RepRange | null
+  emptyHint?: string
 }) {
   const [min, setMin] = useState(value ? String(value.min) : '')
   const [max, setMax] = useState(value ? String(value.max) : '')
@@ -33,15 +38,12 @@ export default function RepRangeField({
   }
 
   return (
-    <FieldLabel
-      label="Fourchette de reps"
-      hint={min.trim() && max.trim() ? undefined : 'Renseigne les deux bornes, ex. 8 et 12.'}
-    >
+    <FieldLabel label="Fourchette de reps" hint={min.trim() && max.trim() ? undefined : emptyHint}>
       <span className="flex items-center gap-3">
         <input
           inputMode="numeric"
           value={min}
-          placeholder="8"
+          placeholder={fallback ? String(fallback.min) : '8'}
           aria-label="Reps minimum"
           onChange={(e) => setMin(e.target.value)}
           onBlur={commit}
@@ -51,7 +53,7 @@ export default function RepRangeField({
         <input
           inputMode="numeric"
           value={max}
-          placeholder="12"
+          placeholder={fallback ? String(fallback.max) : '12'}
           aria-label="Reps maximum"
           onChange={(e) => setMax(e.target.value)}
           onBlur={commit}

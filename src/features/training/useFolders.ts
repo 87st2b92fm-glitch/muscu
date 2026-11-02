@@ -25,6 +25,7 @@ export function useFolders(): FolderSummary[] | undefined {
       id: f.id,
       name: f.name,
       nextTemplateId: f.isProgram ? (f.nextTemplateId ?? undefined) : undefined,
+      isProgram: f.isProgram,
       templates: summarize(f.id),
     }))
     const loose = summarize(null)

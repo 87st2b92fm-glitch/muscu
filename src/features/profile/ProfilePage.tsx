@@ -128,8 +128,12 @@ export default function ProfilePage() {
           <Segmented label="Thème" options={THEMES} value={theme} onChange={setTheme} />
           <div>
             <p className="mb-3 font-semibold">Couleur d’accent</p>
-            <div role="radiogroup" aria-label="Couleur d’accent" className="flex justify-between">
-              {ACCENTS.map(({ value, label, swatch }) => (
+            <div
+              role="radiogroup"
+              aria-label="Couleur d’accent"
+              className="grid grid-cols-5 justify-items-center gap-y-3"
+            >
+              {ACCENTS.map(({ value, label, swatch, light }) => (
                 <button
                   key={value}
                   type="button"
@@ -141,7 +145,12 @@ export default function ProfilePage() {
                   style={{ backgroundColor: swatch }}
                 >
                   {accent === value && (
-                    <Check size={22} strokeWidth={3} className="text-black/80" aria-hidden />
+                    <Check
+                      size={22}
+                      strokeWidth={3}
+                      className={light ? 'text-white' : 'text-black/80'}
+                      aria-hidden
+                    />
                   )}
                 </button>
               ))}

@@ -78,6 +78,38 @@
   --accent: #f472b6;
   --accent-contrast: #0b0d10;
 }
+[data-accent='vert-sombre'] {
+  --accent: #166534;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='vert-sombre'] {
+  --accent: #22a35a;
+  --accent-contrast: #ffffff;
+}
+[data-accent='rouge'] {
+  --accent: #b91c1c;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='rouge'] {
+  --accent: #ef4444;
+  --accent-contrast: #ffffff;
+}
+[data-accent='jaune'] {
+  --accent: #a16207;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='jaune'] {
+  --accent: #facc15;
+  --accent-contrast: #0b0d10;
+}
+[data-accent='turquoise'] {
+  --accent: #0f766e;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='turquoise'] {
+  --accent: #2dd4bf;
+  --accent-contrast: #0b0d10;
+}
 
 @theme inline {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;

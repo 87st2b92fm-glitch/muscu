@@ -10,6 +10,7 @@ export interface FolderSummary {
   name: string
   /** Modèle proposé pour la prochaine séance quand le dossier sert de programme. */
   nextTemplateId?: string
+  isProgram?: boolean
   templates: TemplateSummary[]
 }
 
@@ -18,6 +19,7 @@ export const DEMO_FOLDERS: FolderSummary[] = [
     id: 'demo-ul',
     name: 'Upper / Lower · 4 jours',
     nextTemplateId: 'demo-l1',
+    isProgram: true,
     templates: [
       {
         id: 'demo-l1',
