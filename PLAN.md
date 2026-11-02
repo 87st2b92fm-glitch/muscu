@@ -101,7 +101,7 @@ Analyse de ton export du 2 novembre 2026 : **310 séances, 5 455 séries, de jui
 
 | Point | Traitement |
 |---|---|
-| Salle | Absente de l'export. Attribution **par périodes** (« de telle date à telle date : SUAPS »), avec On Air par défaut et une correction possible séance par séance dans l'aperçu. |
+| Salle | Absente de l'export. **Tout l'historique est attribué à On Air** (décision du 2 nov. 2026) : les records machines faits ailleurs comptent donc comme On Air. Correction possible plus tard séance par séance dans l'historique. |
 | Exercices | Correspondance proposée automatiquement avec la bibliothèque, validée dans l'aperçu. Les variantes du même exercice (ex. « Adduction Hanche » / « Adduction Hanche (Machine) ») sont fusionnées seulement si tu le confirmes. L'app retient tes choix pour un import suivant. |
 | Types de série | `normal` → normale, `warmup` → échauffement, `dropset` → dégressive, `failure` → échec. |
 | RPE (34 séries) | Converti en RIR = 10 − RPE. |

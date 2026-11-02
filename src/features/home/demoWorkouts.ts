@@ -24,7 +24,7 @@ export const DEMO_WORKOUTS: WorkoutSummary[] = [
         name: 'Développé incliné (Smith)',
         sets: 3,
         best: { kg: 70, reps: 8 },
-        records: ['charge'],
+        records: ['weight'],
       },
       { name: 'Écartés poulie assis', sets: 3, best: { kg: 22.5, reps: 12 }, records: [] },
       {
@@ -50,7 +50,7 @@ export const DEMO_WORKOUTS: WorkoutSummary[] = [
         name: 'Leg curl allongé (machine)',
         sets: 3,
         best: { kg: 45.4, reps: 10 },
-        records: ['charge', 'volume'],
+        records: ['weight', 'volume'],
       },
       { name: 'Adduction (machine)', sets: 3, best: { kg: 68, reps: 12 }, records: [] },
       { name: 'Presse à cuisses', sets: 4, best: { kg: 180, reps: 10 }, records: [] },
@@ -65,7 +65,7 @@ export const DEMO_WORKOUTS: WorkoutSummary[] = [
     gym: suaps,
     volumeKg: 10320,
     exercises: [
-      { name: 'Développé couché barre', sets: 4, best: { kg: 85, reps: 6 }, records: ['charge'] },
+      { name: 'Développé couché barre', sets: 4, best: { kg: 85, reps: 6 }, records: ['weight'] },
       { name: 'Rowing barre', sets: 4, best: { kg: 70, reps: 8 }, records: [] },
       { name: 'Développé militaire haltères', sets: 3, best: { kg: 26, reps: 8 }, records: [] },
     ],

@@ -3,7 +3,7 @@ import { Trophy } from 'lucide-react'
 import type { RecordKind } from '../domain/types'
 
 const LABELS: Record<RecordKind, string> = {
-  charge: 'Record charge',
+  weight: 'Record charge',
   volume: 'Record volume',
 }
 
