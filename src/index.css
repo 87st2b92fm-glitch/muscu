@@ -2,30 +2,85 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Couleurs du thème : clair par défaut dans :root, sombre sous .dark (appliqué par défaut). */
+/* Inter, sous-ensemble latin uniquement (couvre le français, 48 Ko) : embarqué pour le hors-ligne. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+    format('woff2-variations');
+}
+
+/* Couleurs : clair dans :root, sombre sous .dark (par défaut). */
 :root {
-  --bg: #f4f5f7;
+  --bg: #f2f3f5;
   --surface: #ffffff;
-  --surface-2: #eceef2;
-  --border: #dcdfe5;
-  --text: #111418;
-  --muted: #5f6672;
-  --accent: #4d7c0f;
-  --accent-contrast: #ffffff;
+  --surface-2: #e9ebef;
+  --border: #dadde3;
+  --text: #0f1114;
+  --muted: #69707c;
+  --gold: #b7791f;
+  --gold-soft: #fdf3dc;
 }
 
 .dark {
-  --bg: #0b0d10;
-  --surface: #15181d;
-  --surface-2: #1e232a;
-  --border: #2a3039;
-  --text: #f1f3f5;
-  --muted: #8b93a1;
+  --bg: #000000;
+  --surface: #17191d;
+  --surface-2: #24272d;
+  --border: #2c3037;
+  --text: #f3f4f6;
+  --muted: #8d94a0;
+  --gold: #f5b82e;
+  --gold-soft: #33280d;
+}
+
+/* Couleur d'accent, choisie dans Profil (attribut data-accent sur <html>). */
+:root,
+[data-accent='vert'] {
+  --accent: #4d7c0f;
+  --accent-contrast: #ffffff;
+}
+.dark,
+.dark[data-accent='vert'] {
   --accent: #a3e635;
+  --accent-contrast: #0b0d10;
+}
+[data-accent='bleu'] {
+  --accent: #1d6fe0;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='bleu'] {
+  --accent: #2f8cff;
+  --accent-contrast: #ffffff;
+}
+[data-accent='orange'] {
+  --accent: #c2410c;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='orange'] {
+  --accent: #ff8a3d;
+  --accent-contrast: #0b0d10;
+}
+[data-accent='violet'] {
+  --accent: #6d28d9;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='violet'] {
+  --accent: #a78bfa;
+  --accent-contrast: #0b0d10;
+}
+[data-accent='rose'] {
+  --accent: #be185d;
+  --accent-contrast: #ffffff;
+}
+.dark[data-accent='rose'] {
+  --accent: #f472b6;
   --accent-contrast: #0b0d10;
 }
 
 @theme inline {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -34,6 +89,8 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-contrast: var(--accent-contrast);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
 }
 
 @layer base {
@@ -52,8 +109,9 @@
     min-height: 100dvh;
     background: var(--bg);
     color: var(--text);
-    font-family:
-      -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
     overscroll-behavior: none;
     user-select: none;
     -webkit-user-select: none;
@@ -66,5 +124,33 @@
     font-size: 16px;
     user-select: text;
     -webkit-user-select: text;
+  }
+
+  button:not(:disabled),
+  a {
+    cursor: pointer;
+  }
+}
+
+/* Feuille modale qui monte du bas de l'écran (voir components/Sheet.tsx). */
+.sheet {
+  margin: auto 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 85dvh;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+.sheet::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+.sheet[open] {
+  animation: sheet-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
   }
 }

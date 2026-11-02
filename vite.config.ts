@@ -7,7 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 // Sur GitHub Pages, l'app est servie sous /<nom-du-dépôt>/ : le workflow de déploiement fournit BASE_PATH.
 const base = process.env.BASE_PATH ?? '/'
 
-const BACKGROUND = '#0b0d10'
+const BACKGROUND = '#000000'
 
 export default defineConfig({
   base,

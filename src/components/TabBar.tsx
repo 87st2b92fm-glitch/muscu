@@ -1,26 +1,26 @@
 import { NavLink } from 'react-router'
-import { ChartLine, CircleUser, Dumbbell, History, Library, type LucideIcon } from 'lucide-react'
+import { ChartLine, CircleUser, Dumbbell, House, type LucideIcon } from 'lucide-react'
 
 const TABS: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: '/', label: 'Séance', icon: Dumbbell },
-  { to: '/historique', label: 'Historique', icon: History },
-  { to: '/performance', label: 'Performance', icon: ChartLine },
-  { to: '/exercices', label: 'Exercices', icon: Library },
+  { to: '/', label: 'Accueil', icon: House },
+  { to: '/entrainement', label: 'Entraînement', icon: Dumbbell },
+  { to: '/performance', label: 'Perf', icon: ChartLine },
   { to: '/profil', label: 'Profil', icon: CircleUser },
 ]
 
+/** Barre d'onglets flottante en pastille, au-dessus de la barre d'accueil de l'iPhone. */
 export default function TabBar() {
   return (
-    <nav className="border-border bg-surface border-t pb-[env(safe-area-inset-bottom)]">
-      <ul className="flex">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
+      <ul className="border-border/70 bg-surface/80 pointer-events-auto flex w-full max-w-md gap-1 rounded-full border p-1.5 shadow-xl shadow-black/30 backdrop-blur-xl">
         {TABS.map(({ to, label, icon: Icon }) => (
           <li key={to} className="flex-1">
             <NavLink
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
-                  isActive ? 'text-accent' : 'text-muted'
+                `flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-full text-[11px] font-semibold transition-colors ${
+                  isActive ? 'bg-surface-2 text-accent' : 'text-muted'
                 }`
               }
             >

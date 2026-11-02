@@ -11,18 +11,20 @@
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
-    <meta name="theme-color" content="#0b0d10" />
+    <meta name="theme-color" content="#000000" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Muscu" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <script>
-      // Applique le thème avant le premier rendu pour éviter un flash clair.
+      // Applique thème et accent avant le premier rendu pour éviter un flash.
       try {
         if (localStorage.getItem('theme') === 'light') {
           document.documentElement.classList.remove('dark')
-          document.querySelector('meta[name="theme-color"]').content = '#f4f5f7'
+          document.querySelector('meta[name="theme-color"]').content = '#f2f3f5'
         }
+        const accent = localStorage.getItem('accent')
+        if (accent) document.documentElement.dataset.accent = accent
       } catch {}
     </script>
   </head>
