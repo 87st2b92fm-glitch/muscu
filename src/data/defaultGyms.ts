@@ -1,3 +1,5 @@
+import { ON_AIR_LOGO } from './gymLogos'
+
 /** Salles créées au premier lancement. La couleur sert de pastille tant qu'aucun logo n'est ajouté. */
 export interface GymLook {
   id: string
@@ -8,7 +10,7 @@ export interface GymLook {
 }
 
 export const DEFAULT_GYMS: GymLook[] = [
-  { id: 'on-air', name: 'On Air', color: '#e11d48' },
+  { id: 'on-air', name: 'On Air', color: '#d32f2b', logo: ON_AIR_LOGO },
   { id: 'suaps', name: 'SUAPS', color: '#2563eb' },
   { id: 'basic', name: 'Basic', color: '#f97316' },
 ]

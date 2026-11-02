@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import PageHeader from '../../components/PageHeader'
 import Segmented from '../../components/Segmented'
+import { NumberField, Toggle } from '../../components/form'
 import { ACCENTS, useAppearance, type Theme } from '../../app/theme'
 import { requestPersistentStorage } from '../../db/db'
 import { updateProfile, useProfile } from '../../db/hooks'
@@ -85,6 +86,34 @@ export default function ProfilePage() {
             <p className="text-sm text-muted">Utilisé uniquement pour les niveaux de force.</p>
           </div>
           <BodyweightSection />
+        </Section>
+
+        <Section title="Séance">
+          <Toggle
+            label="Son de fin de repos"
+            hint="Trois bips quand le repos est terminé (app ouverte)."
+            checked={profile?.restSoundEnabled ?? true}
+            onChange={(restSoundEnabled) => void updateProfile({ restSoundEnabled })}
+          />
+          <Toggle
+            label="Saisir le RIR"
+            hint="Reps en réserve : masque la colonne si tu ne t’en sers pas."
+            checked={profile?.rirEnabled ?? true}
+            onChange={(rirEnabled) => void updateProfile({ rirEnabled })}
+          />
+          {profile && (
+            <NumberField
+              label="Repos par défaut"
+              suffix="s"
+              integer
+              allowEmpty={false}
+              value={profile.defaultRestSec}
+              hint="Réglable aussi exercice par exercice."
+              onCommit={(defaultRestSec) =>
+                defaultRestSec !== null && void updateProfile({ defaultRestSec })
+              }
+            />
+          )}
         </Section>
 
         <Section title="Salles">

@@ -1,3 +1,4 @@
+import Dexie from 'dexie'
 import { afterEach, describe, expect, it } from 'vitest'
 import { DEFAULT_EXERCISES } from '../data/exercises'
 import { AppDB } from './db'
@@ -54,6 +55,26 @@ describe('base de données', () => {
       .equals(['leg-extension', 'on-air'])
       .toArray()
     expect(sets.map((s) => s.id)).toEqual(['1'])
+  })
+
+  it('met le logo On Air dès le premier lancement', async () => {
+    expect((await openDb().gyms.get('on-air'))?.logo).toMatch(/^data:image\/png;base64,/)
+  })
+
+  it('ajoute le logo On Air aux bases v1 sans écraser un logo existant', async () => {
+    const name = `test-${crypto.randomUUID()}`
+    const v1 = new Dexie(name)
+    v1.version(1).stores({ gyms: 'id, order' })
+    await v1.open()
+    await v1.table('gyms').bulkAdd([
+      { id: 'on-air', name: 'On Air', order: 0 },
+      { id: 'basic', name: 'Basic', order: 1, logo: 'data:mon-logo' },
+    ])
+    v1.close()
+
+    db = new AppDB(name)
+    expect((await db.gyms.get('on-air'))?.logo).toMatch(/^data:image\/png/)
+    expect((await db.gyms.get('basic'))?.logo).toBe('data:mon-logo')
   })
 
   it('ne recrée pas les données à la réouverture', async () => {

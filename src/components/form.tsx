@@ -197,3 +197,40 @@ export function Chip({
     </button>
   )
 }
+
+/** Interrupteur on/off, comme dans les réglages iOS. */
+export function Toggle({
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  label: string
+  hint?: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className="flex min-h-12 items-center gap-3 text-left"
+    >
+      <span className="flex-1">
+        <span className="block font-semibold">{label}</span>
+        {hint && <span className="block text-sm text-muted">{hint}</span>}
+      </span>
+      <span
+        className={`relative h-8 w-13 shrink-0 rounded-full transition-colors ${checked ? 'bg-accent' : 'bg-surface-2'}`}
+      >
+        <span
+          className={`absolute top-1 size-6 rounded-full bg-white shadow transition-transform ${
+            checked ? 'translate-x-6' : 'translate-x-1'
+          }`}
+        />
+      </span>
+    </button>
+  )
+}

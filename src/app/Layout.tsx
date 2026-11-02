@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import TabBar from '../components/TabBar'
+import ActiveWorkoutBar from '../features/workout/ActiveWorkoutBar'
+import { useActiveWorkout } from '../features/workout/useWorkout'
 
 export default function Layout() {
   const mainRef = useRef<HTMLElement>(null)
   const { pathname } = useLocation()
+  const active = useActiveWorkout()
 
   // Le défilement se fait dans <main> : on le remet en haut à chaque changement d'écran.
   useEffect(() => {
@@ -17,10 +20,15 @@ export default function Layout() {
       <div className="fixed inset-x-0 top-0 z-30 h-[env(safe-area-inset-top)] bg-bg" aria-hidden />
       <main
         ref={mainRef}
-        className="flex-1 overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top)] pb-[calc(env(safe-area-inset-bottom)+6.5rem)]"
+        className={`flex-1 overflow-y-auto overscroll-contain pt-[env(safe-area-inset-top)] ${
+          active
+            ? 'pb-[calc(env(safe-area-inset-bottom)+10rem)]'
+            : 'pb-[calc(env(safe-area-inset-bottom)+6.5rem)]'
+        }`}
       >
         <Outlet />
       </main>
+      {active && <ActiveWorkoutBar workout={active.workout} />}
       <TabBar />
     </div>
   )

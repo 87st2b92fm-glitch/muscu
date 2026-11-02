@@ -31,6 +31,7 @@ export function defaultGyms(): Gym[] {
     name: gym.name,
     order,
     color: gym.color,
+    logo: gym.logo,
     plates: DEFAULT_PLATES.map((p) => ({ ...p })),
     bars: [{ id: 'olympic', name: 'Barre olympique', kg: 20 }],
     dumbbellIncrementKg: null,

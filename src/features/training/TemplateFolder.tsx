@@ -3,7 +3,15 @@ import { ChevronDown, Play } from 'lucide-react'
 import Button from '../../components/Button'
 import type { FolderSummary, TemplateSummary } from './demoTemplates'
 
-function TemplateCard({ template, isNext }: { template: TemplateSummary; isNext: boolean }) {
+function TemplateCard({
+  template,
+  isNext,
+  onStart,
+}: {
+  template: TemplateSummary
+  isNext: boolean
+  onStart?: () => void
+}) {
   return (
     <article className="flex flex-col gap-3 rounded-3xl bg-surface p-4">
       <div>
@@ -17,7 +25,7 @@ function TemplateCard({ template, isNext }: { template: TemplateSummary; isNext:
         </div>
         <p className="mt-1 line-clamp-2 text-[15px] text-muted">{template.exercises.join(', ')}</p>
       </div>
-      <Button variant={isNext ? 'primary' : 'secondary'}>
+      <Button variant={isNext ? 'primary' : 'secondary'} onClick={onStart} disabled={!onStart}>
         <Play size={18} aria-hidden />
         Commencer
       </Button>
@@ -25,7 +33,14 @@ function TemplateCard({ template, isNext }: { template: TemplateSummary; isNext:
   )
 }
 
-export default function TemplateFolder({ folder }: { folder: FolderSummary }) {
+export default function TemplateFolder({
+  folder,
+  onStart,
+}: {
+  folder: FolderSummary
+  /** Absent pour les modèles d'exemple. */
+  onStart?: (templateId: string) => void
+}) {
   const [open, setOpen] = useState(true)
 
   return (
@@ -46,7 +61,12 @@ export default function TemplateFolder({ folder }: { folder: FolderSummary }) {
       </button>
       {open &&
         folder.templates.map((t) => (
-          <TemplateCard key={t.id} template={t} isNext={t.id === folder.nextTemplateId} />
+          <TemplateCard
+            key={t.id}
+            template={t}
+            isNext={t.id === folder.nextTemplateId}
+            onStart={onStart && (() => onStart(t.id))}
+          />
         ))}
     </section>
   )

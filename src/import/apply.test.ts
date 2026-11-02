@@ -3,6 +3,7 @@ import { AppDB } from '../db/db'
 import { applyHevyImport, existingHevyKeys, rpeToRir } from './apply'
 import type { HevySet, HevyWorkout } from './hevy'
 import { buildPreview } from './preview'
+import { routineCandidates } from './routines'
 
 const set = (kg: number | null, reps: number | null, extra: Partial<HevySet> = {}): HevySet => ({
   type: 'normal',
@@ -86,6 +87,7 @@ describe('applyHevyImport', () => {
       createdExercises: 1,
       bodyweights: 1,
       measurements: 1,
+      templates: 0,
     })
 
     const [workout] = await db.workouts.toArray()
@@ -128,6 +130,37 @@ describe('applyHevyImport', () => {
     expect(await db.workouts.count()).toBe(1)
     expect(await db.exercises.where('name').equals('Kawaï Curl').count()).toBe(1)
     expect((await db.importMappings.get('Kawaï Curl'))?.exerciseId).toBeDefined()
+  })
+})
+
+describe('modèles depuis l’historique', () => {
+  it('crée un dossier et un modèle par routine, sans doublon au second import', async () => {
+    db = new AppDB(`test-${crypto.randomUUID()}`)
+    await importOnce(db)
+    const choices = {
+      gymId: 'on-air',
+      resolutions: new Map(),
+      corrections: new Map(),
+      routines: { folderName: '🍂', routines: routineCandidates(WORKOUTS, 0) },
+    }
+    const preview = buildPreview(
+      WORKOUTS,
+      await db.exercises.toArray(),
+      await db.importMappings.toArray(),
+      existingHevyKeys(await db.workouts.toArray()),
+    )
+    expect((await applyHevyImport(db, preview, [], choices)).templates).toBe(1)
+    expect((await applyHevyImport(db, preview, [], choices)).templates).toBe(0)
+
+    const [folder] = await db.folders.toArray()
+    expect(folder?.name).toBe('🍂')
+    const [template] = await db.templates.toArray()
+    expect(template).toMatchObject({ name: 'Upper', folderId: folder?.id })
+    // Le vélo (sans reps) est écarté ; Kawaï Curl est retrouvé grâce à sa correspondance.
+    expect(template?.blocks).toHaveLength(5)
+    expect(template?.blocks[0]).toMatchObject({ exerciseId: 'bench-press', sets: 3 })
+    expect(template?.blocks[1]?.supersetId).not.toBeNull()
+    expect(template?.blocks[1]?.supersetId).toBe(template?.blocks[2]?.supersetId)
   })
 })
 

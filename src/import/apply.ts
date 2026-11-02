@@ -4,12 +4,15 @@ import type {
   Exercise,
   MeasurementRow,
   SetRow,
+  Template,
   Workout,
   WorkoutBlock,
 } from '../db/types'
+import { normalizeText } from '../domain/search'
 import { round2 } from '../domain/units'
 import type { HevyMeasurement } from './hevy'
 import { hevyWorkoutKey, isImportable, type ImportPreview, type Resolution } from './preview'
+import type { RoutineCandidate } from './routines'
 
 /** Correction d'une valeur suspecte : ignorer la série, ou remplacer reps / charge. */
 export interface Correction {
@@ -18,8 +21,15 @@ export interface Correction {
   kg: number | null
 }
 
+/** Modèles à créer depuis l'historique, rangés dans un dossier. */
+export interface RoutineChoice {
+  folderName: string
+  routines: readonly RoutineCandidate[]
+}
+
 export interface ImportChoices {
   gymId: string
+  routines?: RoutineChoice
   /** Nom Hevy → résolution choisie dans l'aperçu. */
   resolutions: ReadonlyMap<string, Resolution>
   corrections: ReadonlyMap<string, Correction>
@@ -31,6 +41,7 @@ export interface ImportResult {
   createdExercises: number
   bodyweights: number
   measurements: number
+  templates: number
 }
 
 /** RIR ≈ 10 − RPE (RPE 8,5 → RIR 1,5). */
@@ -63,11 +74,21 @@ export async function applyHevyImport(
     createdExercises: 0,
     bodyweights: 0,
     measurements: 0,
+    templates: 0,
   }
 
   await db.transaction(
     'rw',
-    [db.exercises, db.importMappings, db.workouts, db.sets, db.bodyweights, db.measurements],
+    [
+      db.exercises,
+      db.importMappings,
+      db.workouts,
+      db.sets,
+      db.bodyweights,
+      db.measurements,
+      db.folders,
+      db.templates,
+    ],
     async () => {
       // 1. Exercices : existants ou créés, et correspondances retenues pour le prochain import.
       const exerciseIdByName = new Map<string, string>()
@@ -184,7 +205,69 @@ export async function applyHevyImport(
       await db.measurements.bulkAdd(measurementRows)
       result.bodyweights = bodyweights.length
       result.measurements = measurementRows.length
+
+      // 4. Modèles reconstitués, avec toutes les correspondances connues (y compris d'imports passés).
+      if (choices.routines && choices.routines.routines.length > 0) {
+        result.templates = await createTemplates(db, choices.routines, newId)
+      }
     },
   )
   return result
+}
+
+/**
+ * Crée le dossier (ou réutilise celui du même nom) et un modèle par routine, sans doublon de nom.
+ * Les exercices sont retrouvés par les correspondances enregistrées ; un exercice inconnu est sauté.
+ */
+async function createTemplates(
+  db: AppDB,
+  choice: RoutineChoice,
+  newId: () => string,
+): Promise<number> {
+  const mappings = await db.importMappings.toArray()
+  const exerciseIdByName = new Map(mappings.map((m) => [normalizeText(m.sourceName), m.exerciseId]))
+
+  const folders = await db.folders.toArray()
+  let folder = folders.find((f) => f.name === choice.folderName)
+  if (!folder) {
+    folder = {
+      id: newId(),
+      name: choice.folderName,
+      order: folders.reduce((max, f) => Math.max(max, f.order + 1), 0),
+      isProgram: false,
+      nextTemplateId: null,
+    }
+    await db.folders.add(folder)
+  }
+  const existing = await db.templates.where('folderId').equals(folder.id).toArray()
+  const takenNames = new Set(existing.map((t) => t.name))
+
+  const templates: Template[] = []
+  for (const routine of choice.routines) {
+    if (takenNames.has(routine.title)) continue
+    const blocks = routine.exercises.flatMap((e) => {
+      const exerciseId = exerciseIdByName.get(normalizeText(e.name))
+      if (!exerciseId) return []
+      return [
+        {
+          exerciseId,
+          supersetId: e.supersetId === null ? null : `${routine.title}:${e.supersetId}`,
+          sets: e.sets,
+          repRange: null,
+          restSec: null,
+        },
+      ]
+    })
+    if (blocks.length === 0) continue
+    templates.push({
+      id: newId(),
+      folderId: folder.id,
+      name: routine.title,
+      order: existing.length + templates.length,
+      notes: '',
+      blocks,
+    })
+  }
+  await db.templates.bulkAdd(templates)
+  return templates.length
 }

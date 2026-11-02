@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
+import { ON_AIR_LOGO } from '../data/gymLogos'
 import { seedDatabase } from './seed'
 import type {
   BodyweightRow,
@@ -44,6 +45,17 @@ export class AppDB extends Dexie {
       workouts: 'id, startedAt, gymId, status',
       sets: 'id, workoutId, exerciseId, [exerciseId+gymId], at',
       importMappings: 'sourceName',
+    })
+
+    // v2 : logo On Air ajouté aux bases déjà créées (sans écraser un logo choisi).
+    this.version(2).upgrade(async (tx) => {
+      await tx
+        .table('gyms')
+        .where('id')
+        .equals('on-air')
+        .modify((gym: Gym) => {
+          if (!gym.logo) gym.logo = ON_AIR_LOGO
+        })
     })
 
     // Premier lancement uniquement : salles, bibliothèque d'exercices et profil par défaut.

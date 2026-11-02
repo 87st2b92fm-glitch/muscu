@@ -68,6 +68,7 @@ Principes :
 | Silhouette SVG | Tracés repris d'une **librairie open source** (licence vérifiée et citée). |
 | Programmes | Un dossier de modèles en rotation (ex. Upper / Lower), l'app marque la « Prochaine » séance. |
 | Records pendant la séance | Dès qu'une série validée bat un record, elle est **marquée immédiatement** : **record de charge** (charge la plus lourde jamais réussie) et/ou **record de volume** (meilleur charge × reps sur une seule série). Échauffements exclus, charge effective pour les exercices lestés, par salle pour les machines. Les records apparaissent aussi sur les cartes du fil d'accueil. |
+| Saisie en séance | Charge et reps se règlent dans une feuille à gros boutons − / + (pas = incrément de la machine, des haltères ou deux petits disques) ; séries préremplies avec la dernière perf, corrigée par la suggestion de progression. |
 | Logos de salle | Logo **ajouté depuis ta pellicule** dans les réglages de la salle ; à défaut, pastille de couleur avec l'initiale. Affiché dans le sélecteur de salle. |
 
 ## 4. Étapes (un commit par étape)
@@ -114,4 +115,5 @@ Analyse de ton export du 2 novembre 2026 : **310 séances, 5 455 séries, de jui
 | Valeurs suspectes | Signalées dans l'aperçu pour correction, ex. 107 reps au tirage convergent le 2 oct. 2023. |
 | Poids de corps | Repris du fichier de mensurations (62 kg en juillet 2023, 64 kg en février 2026). Entre deux pesées, **interpolation linéaire** pour la charge effective des exercices lestés. |
 | Mensurations | Toutes reprises (cou, épaules, poitrine, biceps, avant-bras, abdomen, taille, hanches, cuisses, mollets). |
+| Routines | Hevy n'exporte pas les routines : à l'import, un modèle par nom de séance choisi, reconstruit depuis la **dernière séance** de ce nom, rangé dans un dossier (ordre = ordre de sélection). |
 | Confidentialité | Tes fichiers ne sont jamais committés. Les tests utilisent des extraits fictifs au même format. |

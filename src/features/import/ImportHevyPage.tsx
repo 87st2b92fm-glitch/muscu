@@ -37,12 +37,18 @@ import {
   type NameEntry,
   type Resolution,
 } from '../../import/preview'
+import { routineCandidates, type RoutineCandidate } from '../../import/routines'
 import GymPicker from '../training/GymPicker'
 import ExerciseChoiceSheet from './ExerciseChoiceSheet'
 
 type Stage =
   | { step: 'pick'; error: string | null }
-  | { step: 'preview'; preview: ImportPreview; measurements: HevyMeasurement[] }
+  | {
+      step: 'preview'
+      preview: ImportPreview
+      measurements: HevyMeasurement[]
+      routines: RoutineCandidate[]
+    }
   | { step: 'importing' }
   | { step: 'done'; result: ImportResult }
 
@@ -82,6 +88,9 @@ export default function ImportHevyPage() {
   const [corrections, setCorrections] = useState(new Map<string, Correction>())
   const [editing, setEditing] = useState<NameEntry | null>(null)
   const [showRecognized, setShowRecognized] = useState(false)
+  // Ordre de sélection = ordre des modèles dans le dossier.
+  const [selectedRoutines, setSelectedRoutines] = useState<string[]>([])
+  const [folderName, setFolderName] = useState('Programme Hevy')
 
   const gymId = chosenGymId ?? profile?.defaultGymId ?? null
   const exerciseById = new Map((exercises ?? []).map((e) => [e.id, e]))
@@ -106,14 +115,22 @@ export default function ImportHevyPage() {
           ]),
         ),
       )
-      setStage({ step: 'preview', preview, measurements })
+      // Routines faites dans les 6 mois précédant la dernière séance de l'export.
+      const lastAt = Math.max(0, ...workouts.map((w) => w.startedAt))
+      const routines = routineCandidates(workouts, lastAt - 183 * 86_400_000)
+      setSelectedRoutines([])
+      setStage({ step: 'preview', preview, measurements, routines })
     } catch (error) {
       setStage({ step: 'pick', error: error instanceof Error ? error.message : String(error) })
     }
     event.target.value = ''
   }
 
-  async function runImport(preview: ImportPreview, measurements: HevyMeasurement[]) {
+  async function runImport(
+    preview: ImportPreview,
+    measurements: HevyMeasurement[],
+    routines: RoutineCandidate[],
+  ) {
     if (!gymId) return
     setStage({ step: 'importing' })
     try {
@@ -121,6 +138,10 @@ export default function ImportHevyPage() {
         gymId,
         resolutions,
         corrections,
+        routines: {
+          folderName: folderName.trim() || 'Programme Hevy',
+          routines: selectedRoutines.flatMap((title) => routines.filter((r) => r.title === title)),
+        },
       })
       setStage({ step: 'done', result })
     } catch (error) {
@@ -342,12 +363,73 @@ export default function ImportHevyPage() {
               </Card>
             )}
 
+            {stage.routines.length > 0 && (
+              <Card>
+                <h2 className="text-lg font-bold">Créer des modèles</h2>
+                <p className="text-sm text-muted">
+                  Hevy n’exporte pas tes routines : chaque modèle reprend les exercices de ta
+                  dernière séance de ce nom. Coche-les dans l’ordre voulu dans le dossier.
+                </p>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-semibold text-muted">Dossier</span>
+                  <input
+                    value={folderName}
+                    onChange={(e) => setFolderName(e.target.value)}
+                    className="min-h-12 rounded-2xl bg-surface-2 px-4 outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </label>
+                <ul>
+                  {stage.routines.map((routine) => {
+                    const position = selectedRoutines.indexOf(routine.title)
+                    const selected = position >= 0
+                    return (
+                      <li key={routine.title}>
+                        <button
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() =>
+                            setSelectedRoutines(
+                              selected
+                                ? selectedRoutines.filter((t) => t !== routine.title)
+                                : [...selectedRoutines, routine.title],
+                            )
+                          }
+                          className="flex min-h-14 w-full items-center gap-3 border-b border-border py-2.5 text-left last:border-b-0"
+                        >
+                          <span
+                            className={`flex size-7 shrink-0 items-center justify-center rounded-full border-2 ${
+                              selected
+                                ? 'border-accent bg-accent text-accent-contrast'
+                                : 'border-border'
+                            }`}
+                          >
+                            {selected && <span className="text-sm font-bold">{position + 1}</span>}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block font-semibold">{routine.title}</span>
+                            <span className="block text-sm text-muted">
+                              {routine.exercises.length} exercices · dernière le{' '}
+                              {dayFormatter.format(routine.lastAt)} · {routine.sessions} séance
+                              {routine.sessions > 1 ? 's' : ''}
+                            </span>
+                          </span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </Card>
+            )}
+
             <Button
               className="min-h-14 text-lg"
               disabled={
-                !gymId || (stage.preview.workouts.length === 0 && stage.measurements.length === 0)
+                !gymId ||
+                (stage.preview.workouts.length === 0 &&
+                  stage.measurements.length === 0 &&
+                  selectedRoutines.length === 0)
               }
-              onClick={() => void runImport(stage.preview, stage.measurements)}
+              onClick={() => void runImport(stage.preview, stage.measurements, stage.routines)}
             >
               Importer
             </Button>
@@ -377,6 +459,7 @@ export default function ImportHevyPage() {
                 <li>{numberFormatter.format(stage.result.workouts)} séances</li>
                 <li>{numberFormatter.format(stage.result.sets)} séries</li>
                 <li>{stage.result.createdExercises} exercice(s) perso créé(s)</li>
+                <li>{stage.result.templates} modèle(s) créé(s)</li>
                 <li>
                   {stage.result.bodyweights} pesée(s), {stage.result.measurements} relevé(s) de
                   mensurations

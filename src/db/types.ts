@@ -159,6 +159,8 @@ export interface Workout {
   blocks: WorkoutBlock[]
   /** Fin du repos en cours (ms) : le chrono se calcule à partir de l'heure, pas d'un compteur. */
   restEndsAt: number | null
+  /** Durée du repos en cours (s), pour la barre de progression. */
+  restDurationSec?: number
   source: 'app' | 'hevy'
 }
 
