@@ -41,7 +41,7 @@ function data(sets: SetRow[]): ContextData {
 }
 
 describe('buildContext', () => {
-  it('donne la dernière séance et la meilleure série (poids du corps inclus), telle que saisie', () => {
+  it('donne la dernière séance, les séries passées et leur charge effective', () => {
     const sets = [
       set('w1', 1, 20, 3), // (64 + 20) × 3 = 252
       set('w1', 2, 0, 12), // 64 × 12 = 768 : meilleure
@@ -50,10 +50,14 @@ describe('buildContext', () => {
     ]
     const context = buildContext(data(sets), 'pull-up', null)!
     expect(context.previous.map((s) => s.workoutId)).toEqual(['w2', 'w2'])
-    expect(context.best).toMatchObject({ kg: 0, reps: 12 })
+    expect(context.sets).toHaveLength(4)
+    // Tractions sans lest : poids du corps seul (64 kg) en charge effective.
+    expect(context.history[1]).toMatchObject({ kg: 64, reps: 12 })
   })
 
-  it('n’a pas de meilleure série sans historique', () => {
-    expect(buildContext(data([]), 'pull-up', null)?.best).toBeNull()
+  it('n’a ni séries ni dernière séance sans historique', () => {
+    const context = buildContext(data([]), 'pull-up', null)!
+    expect(context.sets).toEqual([])
+    expect(context.previous).toEqual([])
   })
 })

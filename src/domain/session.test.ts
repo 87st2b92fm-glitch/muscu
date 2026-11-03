@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { incrementFor, lastSessionSets, plannedSets, type PastSet } from './session'
+import {
+  heaviestInRange,
+  incrementFor,
+  lastSessionSets,
+  plannedSets,
+  type PastSet,
+} from './session'
 import type { SetEntry } from './types'
 
 const past = (workoutId: string, at: number, order: number, kg: number, reps: number): PastSet => ({
@@ -86,5 +92,40 @@ describe('plannedSets', () => {
 
   it('ne recopie pas une série dégressive comme dégressive', () => {
     expect(plannedSets(1, [s(40, 12, 'drop')], null)[0]?.type).toBe('normal')
+  })
+})
+
+describe('heaviestInRange', () => {
+  const sets = [
+    { id: 'a', at: 1, type: 'normal' as const, kg: 40, reps: 14 },
+    { id: 'b', at: 2, type: 'normal' as const, kg: 45, reps: 11 },
+    { id: 'c', at: 3, type: 'normal' as const, kg: 50, reps: 6 },
+    { id: 'd', at: 4, type: 'normal' as const, kg: 45, reps: 12 },
+    { id: 'e', at: 5, type: 'warmup' as const, kg: 80, reps: 10 },
+  ]
+  const effective = new Map<string, number>()
+
+  it('prend la série la plus lourde dans la fourchette, puis la plus longue', () => {
+    expect(heaviestInRange(sets, effective, { min: 8, max: 12 })?.id).toBe('d')
+  })
+
+  it('prend la plus lourde de toutes sans fourchette (échauffements exclus)', () => {
+    expect(heaviestInRange(sets, effective, null)?.id).toBe('c')
+  })
+
+  it('compare la charge effective (poids du corps compris)', () => {
+    const pullUps = [
+      { id: 'x', at: 1, type: 'normal' as const, kg: 0, reps: 8 },
+      { id: 'y', at: 2, type: 'normal' as const, kg: 10, reps: 6 },
+    ]
+    const withBodyweight = new Map([
+      ['x', 70],
+      ['y', 74],
+    ])
+    expect(heaviestInRange(pullUps, withBodyweight, { min: 5, max: 8 })?.id).toBe('y')
+  })
+
+  it('renvoie null si aucune série n’est dans la fourchette', () => {
+    expect(heaviestInRange(sets, effective, { min: 15, max: 20 })).toBeNull()
   })
 })

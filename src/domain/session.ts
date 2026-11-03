@@ -1,7 +1,7 @@
 import type { Equipment } from '../db/types'
 import type { PlateStock } from './plates'
 import type { Suggestion } from './progression'
-import type { SetEntry } from './types'
+import type { RepRange, SetEntry } from './types'
 
 /** Série passée d'un exercice, telle que saisie. */
 export interface PastSet extends SetEntry {
@@ -75,4 +75,25 @@ export function plannedSets(
     planned.push(set)
   }
   return planned
+}
+
+/**
+ * Meilleure série pour la colonne « Meill. » : la plus lourde (charge effective, poids du corps
+ * compris) parmi les séries dont les reps sont dans la fourchette conseillée ; à charge égale,
+ * celle avec le plus de reps, puis la plus ancienne. Sans fourchette, toutes les séries comptent.
+ * Échauffements exclus. `effectiveKg` donne la charge effective de chaque série par identifiant.
+ */
+export function heaviestInRange<T extends SetEntry & { id: string; at: number }>(
+  sets: readonly T[],
+  effectiveKg: ReadonlyMap<string, number>,
+  range: RepRange | null,
+): T | null {
+  let best: T | null = null
+  const kg = (s: T) => effectiveKg.get(s.id) ?? s.kg
+  for (const set of [...sets].sort((a, b) => a.at - b.at)) {
+    if (set.type === 'warmup' || set.reps <= 0) continue
+    if (range && (set.reps < range.min || set.reps > range.max)) continue
+    if (!best || kg(set) > kg(best) || (kg(set) === kg(best) && set.reps > best.reps)) best = set
+  }
+  return best
 }

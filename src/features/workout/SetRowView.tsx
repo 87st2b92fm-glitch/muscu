@@ -68,7 +68,7 @@ export default function SetRowView({
   set: SetRow
   label: string
   previous: SetRow | undefined
-  /** Meilleure série jamais faite sur cet exercice (même valeur sur chaque ligne). */
+  /** Série la plus lourde faite dans la fourchette de reps conseillée (même valeur sur chaque ligne). */
   best: SetRow | null
   bodyweight: boolean
   showRir: boolean

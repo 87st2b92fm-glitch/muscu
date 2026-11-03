@@ -27,6 +27,7 @@ import {
 } from '../../db/workouts'
 import { formatNumber } from '../../domain/format'
 import { describeSuggestion, suggestNext } from '../../domain/progression'
+import { heaviestInRange } from '../../domain/session'
 import type { RecordKind, SetType } from '../../domain/types'
 import { updateExercise } from '../../db/exercises'
 import RepRangeField from '../exercises/RepRangeField'
@@ -75,6 +76,10 @@ export default function ExerciseBlock({
   const kgStep = context?.incrementKg ?? DEFAULT_KG_STEP
   // Fourchette du modèle si elle existe, sinon celle de l'exercice.
   const repRange = block.repRange ?? exercise?.repRange ?? null
+  // « Meill. » : la série la plus lourde faite dans la fourchette de reps conseillée.
+  const best = context
+    ? heaviestInRange(context.sets, new Map(context.history.map((h) => [h.id, h.kg])), repRange)
+    : null
   const suggestion = context
     ? describeSuggestion(suggestNext(context.previous, repRange, context.incrementKg))
     : null
@@ -148,7 +153,7 @@ export default function ExerciseBlock({
               set={set}
               label={String(workingIndex)}
               previous={context?.previous[i]}
-              best={context?.best ?? null}
+              best={best}
               bodyweight={bodyweight}
               showRir={showRir}
               records={records.get(set.id) ?? []}
@@ -158,7 +163,6 @@ export default function ExerciseBlock({
                 if (previous) void updateSet(set.id, { kg: previous.kg, reps: previous.reps })
               }}
               onCopyBest={() => {
-                const best = context?.best
                 if (best) void updateSet(set.id, { kg: best.kg, reps: best.reps })
               }}
               onKg={() =>
