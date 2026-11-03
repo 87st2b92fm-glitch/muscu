@@ -88,7 +88,7 @@ Principes :
 | 9 | Standards de force | Fait : Kilgore (ExRx, 5 mouvements) + Strength Level (39 exercices) → `strengthStandards.json` (source + date), sources dans `data-sources/strength-standards/` ; niveau affiché sur la fiche perf |
 | 10 | Carte du corps | Fait : silhouette body-muscles (Apache-2.0, tracés dans `data-sources/body-muscles/`), 5 niveaux + gris, fiche au tap, liste par muscle, note sur les sources |
 | 11 | Sauvegarde | Fait : export JSON complet (versionné) et CSV via la feuille de partage iOS, import fusion/remplacement, rappel à 14 jours sur l'accueil |
-| 12 | Mensurations | Historique et graphiques (données reprises de Hevy à l'étape 2 bis) |
+| 12 | Mensurations | Fait : Profil → Mensurations et courbes : poids (courbe), 15 mensurations avec évolution et courbe, ajout et suppression de relevés |
 | 13 | Déploiement | GitHub Actions → GitHub Pages, guide d'installation sur iPhone |
 
 ## 5. Limites iOS connues

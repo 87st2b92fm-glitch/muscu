@@ -7,6 +7,7 @@ import {
   FileUp,
   HardDriveDownload,
   Moon,
+  Ruler,
   ShieldAlert,
   ShieldCheck,
   Sun,
@@ -87,6 +88,11 @@ export default function ProfilePage() {
             <p className="text-sm text-muted">Utilisé uniquement pour les niveaux de force.</p>
           </div>
           <BodyweightSection />
+          <Link to="/mensurations" className="-my-2 flex min-h-12 items-center gap-3 font-semibold">
+            <Ruler size={22} className="text-accent" aria-hidden />
+            <span className="flex-1">Mensurations et courbes</span>
+            <ChevronRight size={20} className="text-muted" aria-hidden />
+          </Link>
         </Section>
 
         <Section title="Séance">
