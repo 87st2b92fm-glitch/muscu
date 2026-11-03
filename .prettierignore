@@ -6,3 +6,4 @@ node_modules
 package-lock.json
 public
 src/data/strengthStandards.json
+src/data/bodyMapPaths.ts

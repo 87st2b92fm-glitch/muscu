@@ -8,6 +8,7 @@ import Sparkline from '../../components/charts/Sparkline'
 import { useGyms } from '../../db/hooks'
 import { formatDay } from '../../domain/format'
 import { matchesSearch } from '../../domain/search'
+import BodyMapCard from './BodyMapCard'
 import { headline } from './performance'
 import { usePerformances, useSelectedGym } from './usePerformances'
 
@@ -24,6 +25,7 @@ export default function PerformancePage() {
     <>
       <PageHeader title="Performance" />
       <div className="flex flex-col gap-4 px-4">
+        {performances && performances.length > 0 && <BodyMapCard performances={performances} />}
         {gyms && gymId && (
           <GymFilter
             gyms={gyms}
