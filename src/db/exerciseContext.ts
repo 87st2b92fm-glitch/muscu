@@ -16,6 +16,8 @@ export interface ExerciseContext {
   previous: SetRow[]
   /** Tout l'historique de la portée, en charge effective, pour détecter les records. */
   history: ScoredSet[]
+  /** Meilleure série jamais faite (plus grand charge × reps, poids du corps inclus), telle que saisie. */
+  best: SetRow | null
   incrementKg: number | null
   suggestion: Suggestion | null
   /** Poids de corps actuel, pour la charge effective des exercices lestés. */
@@ -34,6 +36,17 @@ export interface ContextData {
   sets: SetRow[]
 }
 
+/** Série au plus grand volume (charge effective × reps), hors échauffements ; la plus ancienne si égalité. */
+function bestSet(sets: readonly SetRow[], scored: readonly ScoredSet[]): SetRow | null {
+  const volume = new Map(scored.map((s) => [s.id, s.kg * s.reps]))
+  let best: SetRow | null = null
+  for (const set of [...sets].sort((a, b) => a.at - b.at)) {
+    if (set.type === 'warmup' || set.reps <= 0) continue
+    if (!best || volume.get(set.id)! > volume.get(best.id)!) best = set
+  }
+  return best
+}
+
 /** Calcule le contexte d'un exercice à partir de données déjà chargées (pur, testable). */
 export function buildContext(
   data: ContextData,
@@ -47,6 +60,13 @@ export function buildContext(
     (s) => s.exerciseId === exerciseId && recordScope(exercise, s.gymId, data.links) === scope,
   )
   const previous = lastSessionSets(inScope)
+  const history: ScoredSet[] = inScope.map((s) => ({
+    id: s.id,
+    at: s.at,
+    type: s.type,
+    reps: s.reps,
+    kg: effectiveKg(s.kg, exercise.loadMode, bodyweightAt(s.at, data.bodyweights)) ?? s.kg,
+  }))
   const incrementKg = incrementFor(
     exercise.equipment,
     data.gym,
@@ -56,13 +76,8 @@ export function buildContext(
     exercise,
     scope,
     previous,
-    history: inScope.map((s) => ({
-      id: s.id,
-      at: s.at,
-      type: s.type,
-      reps: s.reps,
-      kg: effectiveKg(s.kg, exercise.loadMode, bodyweightAt(s.at, data.bodyweights)) ?? s.kg,
-    })),
+    history,
+    best: bestSet(inScope, history),
     incrementKg,
     suggestion: suggestNext(previous, repRange ?? exercise.repRange, incrementKg),
     bodyweightKg: bodyweightAt(Date.now(), data.bodyweights),

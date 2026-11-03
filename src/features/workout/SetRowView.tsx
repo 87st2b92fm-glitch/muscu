@@ -6,23 +6,60 @@ import type { RecordKind } from '../../domain/types'
 
 const TYPE_LABELS = { warmup: 'É', drop: 'D', failure: 'F' } as const
 
-export const SET_GRID = 'grid grid-cols-[2rem_1fr_4rem_3.25rem_auto_3rem] items-center gap-1.5'
+export const SET_GRID =
+  'grid grid-cols-[1.75rem_minmax(0,1fr)_minmax(0,1fr)_3.75rem_3rem_auto_2.75rem] items-center gap-1'
 
 function formatLoad(kg: number, bodyweight: boolean): string {
   if (bodyweight) return kg > 0 ? `+${formatNumber(kg)}` : 'PDC'
   return kg > 0 ? formatNumber(kg) : '–'
 }
 
-/** Une ligne de série : numéro/type, perf précédente, charge, reps, RIR, validation. */
+/** Charge × reps sur deux lignes (colonnes « Préc. » et « Meill. »), touchable pour la reprendre. */
+function PastCell({
+  set,
+  bodyweight,
+  label,
+  onCopy,
+  className,
+}: {
+  set: SetRow | null | undefined
+  bodyweight: boolean
+  label: string
+  onCopy: () => void
+  className: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onCopy}
+      disabled={!set}
+      aria-label={set ? `Reprendre ${label}` : `Pas de ${label}`}
+      className={`flex min-h-12 min-w-0 flex-col justify-center text-left text-xs leading-tight tabular-nums ${className}`}
+    >
+      {set ? (
+        <>
+          <span className="truncate">{formatLoad(set.kg, bodyweight)}</span>
+          <span>× {set.reps}</span>
+        </>
+      ) : (
+        '—'
+      )}
+    </button>
+  )
+}
+
+/** Une ligne de série : numéro/type, perf précédente, meilleure série, charge, reps, RIR, validation. */
 export default function SetRowView({
   set,
   label,
   previous,
+  best,
   bodyweight,
   showRir,
   records,
   onType,
   onCopyPrevious,
+  onCopyBest,
   onKg,
   onReps,
   onRir,
@@ -31,11 +68,14 @@ export default function SetRowView({
   set: SetRow
   label: string
   previous: SetRow | undefined
+  /** Meilleure série jamais faite sur cet exercice (même valeur sur chaque ligne). */
+  best: SetRow | null
   bodyweight: boolean
   showRir: boolean
   records: RecordKind[]
   onType: () => void
   onCopyPrevious: () => void
+  onCopyBest: () => void
   onKg: () => void
   onReps: () => void
   onRir: () => void
@@ -56,22 +96,20 @@ export default function SetRowView({
         >
           {typeLabel}
         </button>
-        <button
-          type="button"
-          onClick={onCopyPrevious}
-          disabled={!previous}
-          aria-label={previous ? 'Reprendre la perf précédente' : 'Pas de perf précédente'}
-          className="flex min-h-12 min-w-0 flex-col justify-center text-left text-xs leading-tight text-muted tabular-nums"
-        >
-          {previous ? (
-            <>
-              <span className="truncate">{formatLoad(previous.kg, bodyweight)}</span>
-              <span>× {previous.reps}</span>
-            </>
-          ) : (
-            '—'
-          )}
-        </button>
+        <PastCell
+          set={previous}
+          bodyweight={bodyweight}
+          label="la perf précédente"
+          onCopy={onCopyPrevious}
+          className="text-muted"
+        />
+        <PastCell
+          set={best}
+          bodyweight={bodyweight}
+          label="ta meilleure série"
+          onCopy={onCopyBest}
+          className="text-gold"
+        />
         <button
           type="button"
           onClick={onKg}
@@ -106,7 +144,7 @@ export default function SetRowView({
           aria-pressed={set.done}
           aria-label={set.done ? 'Série validée, annuler' : 'Valider la série'}
           disabled={!set.done && set.reps <= 0}
-          className={`flex size-12 items-center justify-center rounded-xl transition-colors disabled:opacity-30 ${
+          className={`flex size-11 items-center justify-center rounded-xl transition-colors disabled:opacity-30 ${
             set.done ? 'bg-accent text-accent-contrast' : 'bg-surface-2 text-muted'
           }`}
         >

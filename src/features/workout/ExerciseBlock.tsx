@@ -132,6 +132,7 @@ export default function ExerciseBlock({
       <div className={`${SET_GRID} px-1.5 text-xs font-semibold text-muted`}>
         <span className="text-center">Série</span>
         <span>Préc.</span>
+        <span className="text-gold">Meill.</span>
         <span className="text-center">{bodyweight ? 'Lest' : 'kg'}</span>
         <span className="text-center">Reps</span>
         <span className={showRir ? 'w-10 text-center' : ''}>{showRir ? 'RIR' : ''}</span>
@@ -147,6 +148,7 @@ export default function ExerciseBlock({
               set={set}
               label={String(workingIndex)}
               previous={context?.previous[i]}
+              best={context?.best ?? null}
               bodyweight={bodyweight}
               showRir={showRir}
               records={records.get(set.id) ?? []}
@@ -154,6 +156,10 @@ export default function ExerciseBlock({
               onCopyPrevious={() => {
                 const previous = context?.previous[i]
                 if (previous) void updateSet(set.id, { kg: previous.kg, reps: previous.reps })
+              }}
+              onCopyBest={() => {
+                const best = context?.best
+                if (best) void updateSet(set.id, { kg: best.kg, reps: best.reps })
               }}
               onKg={() =>
                 onEdit({
