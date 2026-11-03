@@ -5,6 +5,7 @@ import {
   Check,
   ChevronRight,
   FileUp,
+  HardDriveDownload,
   Moon,
   ShieldAlert,
   ShieldCheck,
@@ -159,6 +160,11 @@ export default function ProfilePage() {
         </Section>
 
         <Section title="Données">
+          <Link to="/sauvegarde" className="-my-2 flex min-h-12 items-center gap-3 font-semibold">
+            <HardDriveDownload size={22} className="text-accent" aria-hidden />
+            <span className="flex-1">Sauvegarde</span>
+            <ChevronRight size={20} className="text-muted" aria-hidden />
+          </Link>
           <Link to="/import-hevy" className="-my-2 flex min-h-12 items-center gap-3 font-semibold">
             <FileUp size={22} className="text-accent" aria-hidden />
             <span className="flex-1">Importer depuis Hevy</span>

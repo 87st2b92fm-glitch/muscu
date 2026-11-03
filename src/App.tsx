@@ -13,6 +13,7 @@ import TemplateEditPage from './features/templates/TemplateEditPage'
 import WorkoutDetailPage from './features/history/WorkoutDetailPage'
 import ExercisePerformancePage from './features/performance/ExercisePerformancePage'
 import PlatesPage from './features/tools/PlatesPage'
+import BackupPage from './features/backup/BackupPage'
 import WorkoutDonePage from './features/workout/WorkoutDonePage'
 import GymEditPage from './features/gyms/GymEditPage'
 
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="modeles/:id" element={<TemplateEditPage />} />
         <Route path="seances/:id" element={<WorkoutDetailPage />} />
         <Route path="disques" element={<PlatesPage />} />
+        <Route path="sauvegarde" element={<BackupPage />} />
         <Route path="salles" element={<GymsPage />} />
         <Route path="salles/:id" element={<GymEditPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

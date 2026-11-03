@@ -7,6 +7,7 @@ import PageHeader from '../../components/PageHeader'
 import SectionHeader from '../../components/SectionHeader'
 import { useGyms } from '../../db/hooks'
 import { formatKg } from '../../domain/format'
+import BackupReminder from '../backup/BackupReminder'
 import { DEMO_WORKOUTS } from './demoWorkouts'
 import type { WorkoutSummary } from './types'
 import { useWorkoutSummaries } from './useWorkoutSummaries'
@@ -69,6 +70,7 @@ export default function HomePage() {
         }
       />
       <div className="flex flex-col gap-4 px-4">
+        <BackupReminder hasWorkouts={(summaries?.length ?? 0) > 0} />
         {isDemo && (
           <p className="flex items-start gap-2.5 rounded-2xl border border-dashed border-border px-4 py-3 text-sm text-muted">
             <Sparkles size={18} className="mt-0.5 shrink-0 text-accent" aria-hidden />
