@@ -22,6 +22,7 @@
   --muted: #69707c;
   --gold: #b7791f;
   --gold-soft: #fdf3dc;
+  --danger: #c62828;
 }
 
 .dark {
@@ -33,6 +34,7 @@
   --muted: #8d94a0;
   --gold: #f5b82e;
   --gold-soft: #33280d;
+  --danger: #f87171;
 }
 
 /* Couleur d'accent, choisie dans Profil (attribut data-accent sur <html>). */
@@ -123,6 +125,7 @@
   --color-accent-contrast: var(--accent-contrast);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+  --color-danger: var(--danger);
 }
 
 @layer base {

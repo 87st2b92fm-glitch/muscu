@@ -9,7 +9,6 @@ import type { SetRow } from '../../db/types'
 import {
   addExercises,
   changeWorkoutGym,
-  discardWorkout,
   finishWorkout,
   updateSet,
   updateWorkout,
@@ -18,6 +17,7 @@ import { effectiveKg } from '../../domain/load'
 import { recordsInWorkout } from '../../domain/records'
 import type { RecordKind } from '../../domain/types'
 import GymPicker from '../training/GymPicker'
+import { confirmAbandon } from './abandon'
 import ExerciseBlock from './ExerciseBlock'
 import { formatClock } from './format'
 import RestTimer from './RestTimer'
@@ -79,6 +79,10 @@ export default function WorkoutPage() {
   const pending = sets.filter((s) => !s.done).length
   const done = sets.length - pending
 
+  async function abandon() {
+    if (await confirmAbandon(workout)) navigate('/entrainement', { replace: true })
+  }
+
   async function finish() {
     const message =
       done === 0
@@ -109,6 +113,14 @@ export default function WorkoutPage() {
               {formatClock(now - workout.startedAt)}
             </p>
           </div>
+          <button
+            type="button"
+            onClick={() => void abandon()}
+            aria-label="Abandonner la séance"
+            className="flex size-11 items-center justify-center rounded-full text-danger active:bg-surface"
+          >
+            <Trash2 size={22} aria-hidden />
+          </button>
           <button
             type="button"
             onClick={() => void finish()}
@@ -181,15 +193,7 @@ export default function WorkoutPage() {
           />
         </label>
 
-        <Button
-          variant="ghost"
-          className="text-muted"
-          onClick={async () => {
-            if (!window.confirm('Abandonner la séance ? Rien ne sera enregistré.')) return
-            await discardWorkout(workout.id)
-            navigate('/entrainement', { replace: true })
-          }}
-        >
+        <Button variant="ghost" className="text-danger" onClick={() => void abandon()}>
           <Trash2 size={18} aria-hidden />
           Abandonner la séance
         </Button>
