@@ -17,6 +17,9 @@ import TemplateFolder from './TemplateFolder'
 
 const tile =
   'flex min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl bg-surface px-2 text-[15px] font-semibold whitespace-nowrap active:opacity-80'
+// Tuiles d'action : icône au-dessus, libellé sur deux lignes si besoin.
+const actionTile =
+  'flex min-h-22 flex-col items-start justify-between gap-2 rounded-2xl bg-surface p-4 text-left text-[15px] leading-snug font-semibold active:opacity-80'
 
 export default function TrainingPage() {
   const gyms = useGyms()
@@ -70,42 +73,34 @@ export default function TrainingPage() {
           Démarrer une séance vide
         </button>
 
-        <SectionHeader
-          title="Modèles"
-          action={
-            <button
-              type="button"
-              aria-label="Nouveau dossier"
-              onClick={() => setNewFolderOpen(true)}
-              className="flex size-11 items-center justify-center rounded-full text-text active:bg-surface"
-            >
-              <FolderPlus size={24} aria-hidden />
-            </button>
-          }
-        />
-        <div className="flex gap-3">
+        <SectionHeader title="Mes entraînements" />
+        <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
-            className={tile}
+            className={actionTile}
             onClick={async () => navigate(`/modeles/${await createTemplate(null)}`)}
           >
-            <ClipboardPlus size={20} className="text-accent" aria-hidden />
-            Nouveau modèle
+            <ClipboardPlus size={22} className="text-accent" aria-hidden />
+            Créer un nouvel entraînement
           </button>
-          <Link to="/exercices" className={tile}>
-            <Library size={20} className="text-accent" aria-hidden />
+          <button type="button" className={actionTile} onClick={() => setNewFolderOpen(true)}>
+            <FolderPlus size={22} className="text-accent" aria-hidden />
+            Nouveau dossier
+          </button>
+          <Link to="/exercices" className={actionTile}>
+            <Library size={22} className="text-accent" aria-hidden />
             Exercices
           </Link>
+          <Link to="/disques" className={actionTile}>
+            <Disc3 size={22} className="text-accent" aria-hidden />
+            Calculateur de disques
+          </Link>
         </div>
-        <Link to="/disques" className={`${tile} justify-start px-5`}>
-          <Disc3 size={20} className="text-accent" aria-hidden />
-          Calculateur de disques
-        </Link>
 
         {isDemo && (
           <p className="rounded-2xl border border-dashed border-border px-4 py-3 text-sm text-muted">
-            Modèles d’exemple. Crée les tiens avec « Nouveau modèle », ou depuis l’import Hevy
-            (Profil → Données).
+            Entraînements d’exemple. Crée les tiens avec « Créer un nouvel entraînement », range-les
+            avec « Nouveau dossier », ou importe-les depuis Hevy (Profil → Données).
           </p>
         )}
         {(isDemo ? DEMO_FOLDERS : (folders ?? [])).map((folder) => (
