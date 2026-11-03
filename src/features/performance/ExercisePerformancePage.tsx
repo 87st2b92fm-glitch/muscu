@@ -8,7 +8,9 @@ import Segmented from '../../components/Segmented'
 import { Chip } from '../../components/form'
 import LineChart from '../../components/charts/LineChart'
 import { buildContext, loadContextData } from '../../db/exerciseContext'
-import { useGyms } from '../../db/hooks'
+import { useBodyweights, useGyms, useProfile } from '../../db/hooks'
+import { standardFor } from '../../data/strengthStandards'
+import LevelCard from './LevelCard'
 import { describeSuggestion } from '../../domain/progression'
 import { formatDay, formatKg, formatNumber, formatSet } from '../../domain/format'
 import type { SessionPoint } from '../../domain/progress'
@@ -61,6 +63,8 @@ export default function ExercisePerformancePage() {
   const gyms = useGyms()
   const { gymId, setGymId } = useSelectedGym()
   const performances = usePerformances(gymId)
+  const profile = useProfile()
+  const bodyweights = useBodyweights()
   const [metric, setMetric] = useState<Metric>('e1rm')
   const [rangeDays, setRangeDays] = useState<number | null>(365)
   // Ce que proposera la prochaine séance dans la salle choisie (même calcul qu'en séance).
@@ -133,6 +137,15 @@ export default function ExercisePerformancePage() {
                 .join(', ')}
             </p>
           </section>
+        )}
+
+        {standardFor(exercise.id) && (
+          <LevelCard
+            standard={standardFor(exercise.id)!}
+            oneRmKg={records.estimatedOneRm?.value ?? null}
+            sex={profile?.sex ?? null}
+            bodyweightKg={bodyweights?.[0]?.kg ?? null}
+          />
         )}
 
         <section className="grid grid-cols-2 gap-3" aria-label="Records">

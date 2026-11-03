@@ -85,7 +85,7 @@ Principes :
 | 6 | Accueil et historique | Détail d'une séance, modification et suppression (le fil avec records et le filtre par salle sont faits depuis l'étape 2 bis) |
 | 7 | Records et graphiques | Onglet Performance, sélecteur de salle, records datés, courbes, nouveaux records en fin de séance |
 | 8 | Progression et disques | Suggestion pour la salle du jour, calculateur de disques |
-| 9 | Standards de force | Recherche et vérification → `strengthStandards.json` (source + date), rapport des données non vérifiables |
+| 9 | Standards de force | Fait : Kilgore (ExRx, 5 mouvements) + Strength Level (39 exercices) → `strengthStandards.json` (source + date), sources dans `data-sources/strength-standards/` ; niveau affiché sur la fiche perf |
 | 10 | Carte du corps | SVG face/dos, 5 niveaux + gris, fiche au tap, note sur les sources |
 | 11 | Sauvegarde | Export JSON/CSV, import fusion/remplacement, rappel à 14 jours |
 | 12 | Mensurations | Historique et graphiques (données reprises de Hevy à l'étape 2 bis) |

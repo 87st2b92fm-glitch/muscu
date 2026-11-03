@@ -7,4 +7,10 @@
   - Données vérifiées par somme de contrôle contre la page.
 - Non trouvés : kettlebell swing, rowing landmine. En reps seulement (pas de 1RM) : pompes, crunchs, relevés de genoux, extension lombaire.
 
-Reste à faire (étape 9) : convertir en `src/data/strengthStandards.json`, relier aux exercices, tester.
+## Génération
+
+`python3 data-sources/strength-standards/build.py` produit `src/data/strengthStandards.json` (44 standards reliés à 44 exercices de la bibliothèque).
+
+- Classes ouvertes de Kilgore (« 145+ », « 90+ ») écartées : pas de poids de corps précis.
+- Dips, tractions, muscle-ups : seuils convertis en charge totale (poids de corps + lest).
+- Exercices de la bibliothèque sans standard : machines et poulies (pas de standard fiable), rowing penché aux haltères (pas d'équivalent exact), et les exercices cités ci-dessus.

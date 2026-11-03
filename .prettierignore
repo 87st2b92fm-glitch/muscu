@@ -1,7 +1,8 @@
-dist
-dev-dist
+*.md
 coverage
+dev-dist
+dist
 node_modules
 package-lock.json
 public
-*.md
+src/data/strengthStandards.json
