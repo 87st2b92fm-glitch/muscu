@@ -89,7 +89,7 @@ Principes :
 | 10 | Carte du corps | Fait : silhouette body-muscles (Apache-2.0, tracés dans `data-sources/body-muscles/`), 5 niveaux + gris, fiche au tap, liste par muscle, note sur les sources |
 | 11 | Sauvegarde | Fait : export JSON complet (versionné) et CSV via la feuille de partage iOS, import fusion/remplacement, rappel à 14 jours sur l'accueil |
 | 12 | Mensurations | Fait : Profil → Mensurations et courbes : poids (courbe), 15 mensurations avec évolution et courbe, ajout et suppression de relevés |
-| 13 | Déploiement | GitHub Actions → GitHub Pages, guide d'installation sur iPhone |
+| 13 | Déploiement | Fait : workflow GitHub Actions → Pages (tests puis build sous /<dépôt>/), guide dans `DEPLOIEMENT.md` |
 
 ## 5. Limites iOS connues
 - Pas de vibration (`navigator.vibrate` absent de Safari iOS) ; le son est débloqué au premier tap de la séance.
@@ -98,7 +98,7 @@ Principes :
 
 ## 6. Import Hevy (étape 2 bis)
 
-Analyse de ton export du 2 novembre 2026 : **310 séances, 5 455 séries, de juillet 2023 à novembre 2026**, 137 noms d'exercices, plus un fichier de mensurations (4 dates).
+Analyse d'un export Hevy réel (novembre 2026) : plusieurs centaines de séances sur trois ans, environ 140 noms d'exercices, plus un fichier de mensurations.
 
 **Format** : une ligne par série. Colonnes : `title`, `start_time`, `end_time`, `exercise_title`, `superset_id`, `exercise_notes`, `set_index`, `set_type`, `weight_kg`, `reps`, `rpe`. Les dates sont au format français (« 1 nov. 2026, 13:48 ») et les noms d'exercices sont ceux affichés dans ton Hevy.
 
@@ -113,7 +113,7 @@ Analyse de ton export du 2 novembre 2026 : **310 séances, 5 455 séries, de jui
 | Notes d'exercice, supersets | Repris. |
 | Cardio (1 série de vélo) | Ignoré. |
 | Valeurs suspectes | Signalées dans l'aperçu pour correction, ex. 107 reps au tirage convergent le 2 oct. 2023. |
-| Poids de corps | Repris du fichier de mensurations (62 kg en juillet 2023, 64 kg en février 2026). Entre deux pesées, **interpolation linéaire** pour la charge effective des exercices lestés. |
+| Poids de corps | Repris du fichier de mensurations. Entre deux pesées, **interpolation linéaire** pour la charge effective des exercices lestés. |
 | Mensurations | Toutes reprises (cou, épaules, poitrine, biceps, avant-bras, abdomen, taille, hanches, cuisses, mollets). |
 | Routines | Hevy n'exporte pas les routines : à l'import, un modèle par nom de séance choisi, reconstruit depuis la **dernière séance** de ce nom, rangé dans un dossier (ordre = ordre de sélection). |
 | Confidentialité | Tes fichiers ne sont jamais committés. Les tests utilisent des extraits fictifs au même format. |
