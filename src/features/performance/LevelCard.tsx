@@ -56,12 +56,22 @@ export default function LevelCard({
       ) : (
         assessment && (
           <>
-            <p className="text-2xl font-extrabold">{STRENGTH_LEVELS[assessment.level]}</p>
+            <p className="flex items-center gap-2 text-2xl font-extrabold">
+              <span
+                className="inline-block size-3.5 rounded-full"
+                style={{ background: `var(--level-${assessment.level})` }}
+                aria-hidden
+              />
+              {STRENGTH_LEVELS[assessment.level]}
+            </p>
             <div className="grid grid-cols-5 gap-1" aria-hidden>
               {STRENGTH_LEVELS.map((name, i) => (
                 <span
                   key={name}
-                  className={`h-2 rounded-full ${i <= assessment.level ? 'bg-accent' : 'bg-surface-2'}`}
+                  className="h-2 rounded-full"
+                  style={{
+                    background: i <= assessment.level ? `var(--level-${i})` : 'var(--surface-2)',
+                  }}
                 />
               ))}
             </div>

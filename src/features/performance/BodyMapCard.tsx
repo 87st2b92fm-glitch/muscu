@@ -11,10 +11,8 @@ import { muscleLevels, type MuscleLevel } from '../../domain/muscleLevels'
 import { STRENGTH_LEVELS, type StrengthLevel } from '../../domain/strengthLevel'
 import type { ExercisePerformance } from './performance'
 
-// Rampe séquentielle d'une seule teinte (l'accent), du plus clair au plus intense.
-const LEVEL_MIX = [40, 56, 71, 86, 100]
-const levelFill = (level: StrengthLevel) =>
-  `color-mix(in oklab, var(--accent) ${LEVEL_MIX[level]}%, var(--surface-2))`
+// Une teinte par niveau (vert → violet), définie dans index.css.
+const levelFill = (level: StrengthLevel) => `var(--level-${level})`
 const NO_DATA_FILL = 'color-mix(in oklab, var(--muted) 45%, var(--surface))'
 
 const kg = (v: number) => formatKg(Math.round(v * 10) / 10)
