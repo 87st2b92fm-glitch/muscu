@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { useConfirm } from '../../components/confirmContext'
 import { Dumbbell, X } from 'lucide-react'
 import type { Workout } from '../../db/types'
 import { confirmAbandon } from './abandon'
@@ -7,6 +8,7 @@ import { useNow } from './useNow'
 
 /** Rappel de la séance en cours, au-dessus de la barre d'onglets : y revenir d'un tap, ou l'abandonner. */
 export default function ActiveWorkoutBar({ workout }: { workout: Workout }) {
+  const confirm = useConfirm()
   const now = useNow(1000)
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] z-20 flex justify-center px-5">
@@ -21,7 +23,7 @@ export default function ActiveWorkoutBar({ workout }: { workout: Workout }) {
         </Link>
         <button
           type="button"
-          onClick={() => void confirmAbandon(workout)}
+          onClick={() => void confirmAbandon(workout, confirm)}
           aria-label="Abandonner la séance"
           className="mx-1 flex size-11 shrink-0 items-center justify-center rounded-full active:bg-black/15"
         >

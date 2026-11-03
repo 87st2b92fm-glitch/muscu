@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useConfirm } from '../../components/confirmContext'
 import { Link, useNavigate } from 'react-router'
 import { ClipboardPlus, Disc3, FolderPlus, Library, Plus } from 'lucide-react'
 import PageHeader from '../../components/PageHeader'
@@ -22,6 +23,7 @@ const actionTile =
   'flex min-h-22 flex-col items-start justify-between gap-2 rounded-2xl bg-surface p-4 text-left text-[15px] leading-snug font-semibold active:opacity-80'
 
 export default function TrainingPage() {
+  const confirm = useConfirm()
   const gyms = useGyms()
   const profile = useProfile()
   // Salle du jour : la salle par défaut tant que l'utilisateur n'en a pas choisi une autre.
@@ -40,7 +42,11 @@ export default function TrainingPage() {
     if (!gymId) return
     if (
       active &&
-      !window.confirm(`La séance « ${active.workout.title} » est en cours : la reprendre ?`)
+      !(await confirm({
+        title: 'Une séance est déjà en cours',
+        message: `« ${active.workout.title} » n’est pas terminée : tu vas la reprendre.`,
+        confirmLabel: 'Reprendre',
+      }))
     )
       return
     await startWorkout({ templateId, gymId })

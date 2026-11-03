@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router'
 import App from './App'
+import ConfirmProvider from './components/ConfirmProvider'
 import { requestPersistentStorage } from './db/db'
 import './index.css'
 
@@ -11,7 +12,9 @@ void requestPersistentStorage()
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HashRouter>
-      <App />
+      <ConfirmProvider>
+        <App />
+      </ConfirmProvider>
     </HashRouter>
   </StrictMode>,
 )

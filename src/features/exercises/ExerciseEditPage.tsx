@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useConfirm } from '../../components/confirmContext'
 import { useNavigate, useParams } from 'react-router'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Eye, EyeOff, Trash2 } from 'lucide-react'
@@ -22,6 +23,7 @@ const LOAD_MODES: { value: LoadMode; label: string }[] = [
 ]
 
 export default function ExerciseEditPage() {
+  const confirm = useConfirm()
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const exercise = useLiveQuery(() => db.exercises.get(id), [id])
@@ -31,7 +33,15 @@ export default function ExerciseEditPage() {
 
   async function remove() {
     const action = exercise!.custom ? 'Supprimer' : 'Masquer'
-    if (!window.confirm(`${action} « ${exercise!.name} » ?`)) return
+    const ok = await confirm({
+      title: `${action} « ${exercise!.name} » ?`,
+      message: exercise!.custom
+        ? 'S’il a déjà servi, il sera seulement masqué et son historique conservé.'
+        : 'Son historique et ses records sont conservés.',
+      confirmLabel: action,
+      danger: exercise!.custom,
+    })
+    if (!ok) return
     const result = await removeExercise(exercise!)
     if (result === 'deleted') navigate('/exercices', { replace: true })
     else setMessage('Exercice masqué : son historique et ses records sont conservés.')

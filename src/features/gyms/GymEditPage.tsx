@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useConfirm } from '../../components/confirmContext'
 import { useNavigate, useParams } from 'react-router'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Check, ImagePlus, Plus, Star, Trash2 } from 'lucide-react'
@@ -17,6 +18,7 @@ const iconButton =
   'flex size-11 shrink-0 items-center justify-center rounded-full text-muted active:bg-surface-2'
 
 export default function GymEditPage() {
+  const confirm = useConfirm()
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const gym = useLiveQuery(() => db.gyms.get(id), [id])
@@ -45,7 +47,13 @@ export default function GymEditPage() {
       setMessage(blocker)
       return
     }
-    if (!window.confirm(`Supprimer la salle « ${gym!.name} » ?`)) return
+    const ok = await confirm({
+      title: `Supprimer la salle « ${gym!.name} » ?`,
+      message: 'Ses disques, barres et réglages de machines seront supprimés.',
+      confirmLabel: 'Supprimer',
+      danger: true,
+    })
+    if (!ok) return
     await deleteGym(gym!.id)
     navigate('/salles', { replace: true })
   }

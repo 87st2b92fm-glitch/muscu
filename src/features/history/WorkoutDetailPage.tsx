@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useConfirm } from '../../components/confirmContext'
 import { useNavigate, useParams } from 'react-router'
 import { ClipboardPlus, Pencil, Plus, Trash2, Trophy } from 'lucide-react'
 import Button from '../../components/Button'
@@ -35,6 +36,7 @@ const SET_TYPES: { value: SetType; label: string }[] = [
 
 /** Détail d'une séance passée, modifiable (les records sont recalculés automatiquement). */
 export default function WorkoutDetailPage() {
+  const confirm = useConfirm()
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const detail = useWorkoutDetail(id)
@@ -216,12 +218,13 @@ export default function WorkoutDetailPage() {
           variant="ghost"
           className="text-muted"
           onClick={async () => {
-            if (
-              !window.confirm(
-                `Supprimer la séance « ${workout.title} » ? Ses records disparaîtront aussi.`,
-              )
-            )
-              return
+            const ok = await confirm({
+              title: `Supprimer la séance « ${workout.title} » ?`,
+              message: 'Ses séries et ses records disparaîtront aussi.',
+              confirmLabel: 'Supprimer',
+              danger: true,
+            })
+            if (!ok) return
             await discardWorkout(workout.id)
             navigate('/', { replace: true })
           }}

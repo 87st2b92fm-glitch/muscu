@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { useConfirm } from '../../components/confirmContext'
 import { Plus, Trash2 } from 'lucide-react'
 import Button from '../../components/Button'
 import RecordBadge from '../../components/RecordBadge'
@@ -38,6 +39,7 @@ export default function PastBlock({
   onEdit: (target: EditTarget) => void
   onSetMenu: (set: SetRow) => void
 }) {
+  const confirm = useConfirm()
   const bodyweight = exercise?.loadMode === 'bodyweight'
   const cell =
     'flex min-h-11 items-center justify-center rounded-xl bg-surface-2 px-3 font-bold tabular-nums active:opacity-70'
@@ -159,12 +161,14 @@ export default function PastBlock({
           <Button
             variant="secondary"
             className="flex-1"
-            onClick={() => {
-              if (
-                window.confirm(`Retirer « ${exercise?.name ?? 'cet exercice'} » de la séance ?`)
-              ) {
-                void removeBlock(workout, block.id)
-              }
+            onClick={async () => {
+              const ok = await confirm({
+                title: `Retirer « ${exercise?.name ?? 'cet exercice'} » ?`,
+                message: 'Ses séries seront supprimées de cette séance.',
+                confirmLabel: 'Retirer',
+                danger: true,
+              })
+              if (ok) void removeBlock(workout, block.id)
             }}
           >
             <Trash2 size={18} aria-hidden />

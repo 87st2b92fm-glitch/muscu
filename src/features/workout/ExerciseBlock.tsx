@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useConfirm } from '../../components/confirmContext'
 import {
   ArrowDown,
   ArrowUp,
@@ -65,6 +66,7 @@ export default function ExerciseBlock({
   showRir: boolean
   onEdit: (target: EditTarget) => void
 }) {
+  const confirm = useConfirm()
   const [menuOpen, setMenuOpen] = useState(false)
   const [setMenu, setSetMenu] = useState<SetRow | null>(null)
   const [rirFor, setRirFor] = useState<SetRow | null>(null)
@@ -329,9 +331,14 @@ export default function ExerciseBlock({
           <Button
             variant="ghost"
             className="text-muted"
-            onClick={() => {
-              if (!window.confirm(`Retirer « ${exercise?.name ?? 'cet exercice'} » de la séance ?`))
-                return
+            onClick={async () => {
+              const ok = await confirm({
+                title: `Retirer « ${exercise?.name ?? 'cet exercice'} » ?`,
+                message: 'Ses séries seront supprimées de la séance.',
+                confirmLabel: 'Retirer',
+                danger: true,
+              })
+              if (!ok) return
               void removeBlock(workout, block.id)
               setMenuOpen(false)
             }}

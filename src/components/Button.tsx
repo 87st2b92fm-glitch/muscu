@@ -1,11 +1,12 @@
 import type { ButtonHTMLAttributes } from 'react'
 
-type Variant = 'primary' | 'secondary' | 'ghost'
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-accent text-accent-contrast',
   secondary: 'bg-surface-2 text-text',
   ghost: 'text-accent',
+  danger: 'bg-danger text-white',
 }
 
 export default function Button({

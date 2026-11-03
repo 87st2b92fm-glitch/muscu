@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useConfirm } from '../../components/confirmContext'
 import { useNavigate, useParams } from 'react-router'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowDown, ArrowUp, Copy, Link2, Link2Off, Play, Plus, Trash2 } from 'lucide-react'
@@ -30,6 +31,7 @@ const iconButton =
   'flex size-11 items-center justify-center rounded-full bg-surface-2 active:opacity-70 disabled:opacity-30'
 
 export default function TemplateEditPage() {
+  const confirm = useConfirm()
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const template = useLiveQuery(() => db.templates.get(id), [id])
@@ -230,12 +232,13 @@ export default function TemplateEditPage() {
           <Button
             variant="secondary"
             onClick={async () => {
-              if (
-                !window.confirm(
-                  `Supprimer le modèle « ${template.name} » ? Tes séances passées sont conservées.`,
-                )
-              )
-                return
+              const ok = await confirm({
+                title: `Supprimer le modèle « ${template.name} » ?`,
+                message: 'Tes séances passées sont conservées.',
+                confirmLabel: 'Supprimer',
+                danger: true,
+              })
+              if (!ok) return
               await deleteTemplate(template.id)
               navigate('/entrainement', { replace: true })
             }}

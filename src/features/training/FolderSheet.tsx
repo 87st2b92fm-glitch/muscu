@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { useConfirm } from '../../components/confirmContext'
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
 import Button from '../../components/Button'
 import Sheet from '../../components/Sheet'
@@ -14,6 +15,7 @@ export default function FolderSheet({
   folderId: string | null
   onClose: () => void
 }) {
+  const confirm = useConfirm()
   const folder = useLiveQuery(
     async () => (folderId ? db.folders.get(folderId) : undefined),
     [folderId],
@@ -70,12 +72,13 @@ export default function FolderSheet({
             variant="ghost"
             className="text-muted"
             onClick={async () => {
-              if (
-                !window.confirm(
-                  `Supprimer le dossier « ${folder.name} » ? Ses modèles sont conservés.`,
-                )
-              )
-                return
+              const ok = await confirm({
+                title: `Supprimer le dossier « ${folder.name} » ?`,
+                message: 'Ses modèles sont conservés, hors dossier.',
+                confirmLabel: 'Supprimer',
+                danger: true,
+              })
+              if (!ok) return
               await deleteFolder(folder.id)
               onClose()
             }}

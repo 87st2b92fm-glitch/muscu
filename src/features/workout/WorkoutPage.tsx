@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useConfirm } from '../../components/confirmContext'
 import { Navigate, useNavigate } from 'react-router'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
 import Button from '../../components/Button'
@@ -30,6 +31,7 @@ const SUPERSET_COLORS = ['#38bdf8', '#f472b6', '#facc15', '#a78bfa', '#34d399']
 
 /** Écran de séance (« mode salle ») : plein écran, gros boutons, écran maintenu allumé. */
 export default function WorkoutPage() {
+  const confirm = useConfirm()
   const navigate = useNavigate()
   const active = useActiveWorkout()
   const contexts = useExerciseContexts(active?.workout)
@@ -80,17 +82,22 @@ export default function WorkoutPage() {
   const done = sets.length - pending
 
   async function abandon() {
-    if (await confirmAbandon(workout)) navigate('/entrainement', { replace: true })
+    if (await confirmAbandon(workout, confirm)) navigate('/entrainement', { replace: true })
   }
 
   async function finish() {
-    const message =
-      done === 0
-        ? 'Aucune série validée : la séance sera abandonnée. Continuer ?'
-        : pending > 0
-          ? `${pending} série(s) non validée(s) seront supprimées. Terminer la séance ?`
-          : 'Terminer la séance ?'
-    if (!window.confirm(message)) return
+    const ok = await confirm({
+      title: done === 0 ? 'Aucune série validée' : 'Terminer la séance ?',
+      message:
+        done === 0
+          ? 'La séance sera abandonnée : rien ne sera enregistré.'
+          : pending > 0
+            ? `${pending} série${pending > 1 ? 's' : ''} non validée${pending > 1 ? 's' : ''} ser${pending > 1 ? 'ont' : 'a'} supprimée${pending > 1 ? 's' : ''}.`
+            : undefined,
+      confirmLabel: done === 0 ? 'Abandonner' : 'Terminer',
+      danger: done === 0,
+    })
+    if (!ok) return
     const saved = await finishWorkout(workout.id)
     navigate(saved ? `/seance/bilan/${workout.id}` : '/entrainement', { replace: true })
   }
